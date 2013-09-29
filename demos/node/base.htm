@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<script src="../../external/jquery.min.js"></script>
+<script src="../../external/bmoor.min.js" root='../../src'></script>
+<script src='../../src/jquery/jquery.jqote2.js'></script>
+<script src="../../src/snap/observer/Map.js"></script>
+<script src="../../src/snap/observer/Collection.js"></script>
+<script src="../../src/snap/controller/Abstract.js"></script>
+<script src='../../src/snap/lib/Bootstrap.js'></script>
+<script src='../../src/snap/templating/JQote.js'></script>
+	
+<script src="../../src/snap/Core.js"></script>
+<script src="../../src/snap/node/Basic.js"></script>
+<script src="../../src/snap/node/View.js"></script>
+<script src="../../src/snap/node/Text.js"></script>
+<script src="../../src/snap/node/List.js"></script>
+
+</head>
+<body>
+	
+<script>
+(function( global ){
+	bMoor.constructor.define({
+		name : 'Controller',
+		namespace : ['test'],
+		parent : ['snap','controller','Abstract'],
+		require : {
+			classes : [ 
+				['snap','observer','Map'],
+				['snap','observer','Collection']
+			]
+		},
+		properties : {
+			_model : function(){ 
+				return { 
+					foo : 'foot', 
+					bar : { uh:'yay' }, 
+					list: [
+						{x:'eins'},
+						{x:'zwei'},
+						{x:'drei'}
+					]
+				};
+			}
+		}
+	});
+}( this ));
+</script>
+
+<ul snap-node="snap.node.List" snap-template="list1" snap-controller="test.Controller" snap-scope="list"></ul>
+<ul snap-node="snap.node.List" snap-template="list1" snap-controller="test.Controller" snap-scope="list" snap-mountBelow='true'>
+	<li mountBelow>This is a pre existing thing</li>
+	<li>This should be the footer</li>
+</ul>
+<div snap-node="snap.node.View" snap-template="template1" snap-controller="test.Controller"> Loading... </div>
+
+<script type="text/html" id="template1">
+<![CDATA[
+	<b><#= this.foo #></b>
+	<span snap-node="snap.node.View" snap-template="template2" snap-scope="bar"></span>
+]]>
+</script>
+<script type="text/html" id="template2">
+<![CDATA[
+	<i><#= this.uh #></i>
+]]>
+</script>
+<script type="text/html" id="list1">
+<![CDATA[
+	<li><i><#= this.x #></i></li>
+]]>
+</script>
+</body>
+</html>

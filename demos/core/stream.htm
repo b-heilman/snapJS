@@ -1,0 +1,35 @@
+<html>
+<head>
+<script src="../../external/jquery.min.js"></script>
+<script src="../../external/bmoor.min.js" root='../../src'></script>
+<script src="../../src/snap/lib/Stream.js"></script>
+</head>
+<body>
+<script>
+bMoor.autoload.done(function(){
+	var 
+		obj1 = {},
+		obj2 = {},
+		obj3 = {},
+		obs1 = new snap.observer.Map( obj1 ),
+		obs2 = new snap.observer.Map( obj2 ),
+		obs3 = new snap.observer.Map( obj3 );
+
+	snap.lib.stream( 'test' ).bind( obs1 );
+	snap.lib.stream( 'test' ).bind( obs2, {'einse':'test','zwei':'derp'} );
+	snap.lib.stream( 'test' ).bind( obs3, {'drei':'test'}, {'value':'derp'} );
+
+	snap.lib.stream( 'test' ).push( 'value', 3 );
+
+	obj3.test = 'woot';
+	obj2.zwei = 'zwei';
+
+	setTimeout( function(){
+		console.log( obj1 );
+		console.log( obj2 );	
+		console.log( obj3 );	
+	}, 1000);
+});
+</script>
+</body>
+</html>

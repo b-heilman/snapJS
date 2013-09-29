@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+	<script src="../../external/jquery.min.js"></script>
+	<script src="../../external/bmoor.min.js" root='../../src'></script>
+	<script src='../../src/jquery/jquery.jqote2.js'></script>
+	<script src="../../src/snap/node/input/Text.js"></script>
+	<script src="../../src/snap/node/input/Checked.js"></script>
+	<script src="../../src/snap/node/input/Button.js"></script>
+	<script src="../../src/snap/node/input/Select.js"></script>
+	<script src="../../src/snap/service/Abstract.js"></script>
+	<script src="../../src/snap/node/input/Validation.js"></script>
+	<script src="../../src/snap/node/input/Disabled.js"></script>
+</head>
+<body>
+<style>
+	.state-error {
+		background-color: #fcc;
+	}
+
+	.state-valid {
+		background-color: #cfc;
+	}
+</style>
+<script>
+var daMap = { 
+	number   : 10, 
+	reg : '', 
+	delay : 'delay' 
+};
+
+bMoor.constructor.singleton({
+	name : 'Service',
+	namespace : [ 'test' ],
+	parent : [ 'snap','service','Abstract' ],
+	properties : {
+		_create : 'srvc/create.srvc?blar=:display&asdsdas=asdads',
+		_update : 'srvc/update.srvc?blar=:display',
+		_remove : '/delete/somewhere'
+	}
+});
+
+bMoor.constructor.mutate({
+	name : 'Control',
+	namespace : [ 'test' ],
+	parent : [ 'snap','controller','Abstract' ],
+	services : { 'srvc' : ['test','Service'] },
+	decorators : [
+		['snap','controller','Form']
+	],
+	properties : {
+		_delay : false,
+		_key : 'key',
+		_model : function(){
+			return daMap;
+		},
+		_sendCreate : function( observer, cb ){
+			this._.srvc.create( this, observer, cb );
+		},
+		_sendUpdate : function( observer, cb ){
+			this._.srvc.update( this, observer, cb );
+		},
+		_sendRemove : function( observer, cb ){
+			this._.srvc.remove( this, observer, cb );
+		}
+	}
+});
+
+</script>
+<form snap-controller="test.Control">
+	<ul snap-node="snap.node.List" class="errors" snap-observe='$errors' snap-template="errorTemplate"></ul>
+	<ul snap-node="snap.node.List" class="messages" snap-observe='$messages' snap-template="messageTemplate"></ul>
+	<div>
+		<span snap-node="snap.node.Text" snap-scope="number"></span>
+		<label>number<input snap-node="snap.node.input.Text" snap-visage='snap.node.input.Validation' snap-min='5' snap-max='20' type='text' name='number'/></label>
+	</div>
+	<div>
+		<span snap-node="snap.node.Text" snap-scope="reg"></span>
+		<label>reg<input snap-node="snap.node.input.Text" snap-visage='snap.node.input.Validation' snap-match='^\d*$' type='text' name='reg'/></label>
+	</div>
+	<div>
+		<span snap-node="snap.node.Text" snap-scope="delay"></span>
+		<label>delay<input snap-node="snap.node.input.Text" snap-visage='snap.node.input.Validation' snap-match='^\d*$' snap-delay='500' type='text' name='delay'/></label>
+	</div>
+	<button type='reset' snap-node='snap.node.input.Button'>Reset</button>
+	<button type='submit' snap-node='snap.node.input.Button' snap-visage='snap.node.input.Disabled'>Submit</button>
+</form>
+
+<script id='errorTemplate' type='text/html'>
+	<li><#= this #></li>
+</script>
+
+<script id='messageTemplate' type='text/html'>
+	<li><#= this #></li>
+</script>
+
+</body>
+</html>
