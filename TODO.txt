@@ -1,0 +1,17 @@
+- Allow views to use innerHTML to set its template (this would be very tough, need to not use <>)
+	! this may break the existing parser.
+	? How do you handle recursive nodes in this
+
+? Do I want to remove observe...
+
+- Services
+	- acts as an in memory DB
+	- create a system that caches responses and what not
+	- error handling
+	
+- General tests
+
+- Have _element return back the $( element )
+- do a find by 'class' for up the chain : closestNode( 'class instance' )
+- allow a way for an objec to map a specific variable change to a specific action
+- add a onAlteration hook asside from update and setContent
