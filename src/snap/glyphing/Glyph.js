@@ -25,8 +25,8 @@ bMoor.constructor.define({
 			
 			this.active = false;
 			this.limits = this._decode( this._getAttribute('limits') );
-			this.minWidth = parseInt( this._getAttribute('minWidth', this.__static.minWidth) );
-			this.minHeight = parseInt( this._getAttribute('minHeight', this.__static.minHeight) );
+			this.minWidth = parseInt( this._getAttribute('minWidth', this.__static.minWidth), 10 );
+			this.minHeight = parseInt( this._getAttribute('minHeight', this.__static.minHeight), 10 );
 			
 			element.style.position = 'absolute';
 			
@@ -40,8 +40,8 @@ bMoor.constructor.define({
 			this.setModelValues( this.makeModelValues(this.model) );
 			
 			this.model.gap = {
-				left : parseInt( this.$.css('padding-left') ) + parseInt( this.$.css('border-left-width') ),
-				top  : parseInt( this.$.css('padding-top') ) + parseInt( this.$.css('border-top-width') )
+				left : parseInt( this.$.css('padding-left'), 10 ) + parseInt( this.$.css('border-left-width'), 10 ),
+				top  : parseInt( this.$.css('padding-top'), 10 ) + parseInt( this.$.css('border-top-width'), 10 )
 			};
 		},
 		_mapUpdate : function( data ){
@@ -107,10 +107,11 @@ bMoor.constructor.define({
 		},
 		setModelValues : function( values ){
 			var 
+				dex,
 				defaults = this.makeModelDefaults(),
 				cleanses = this.makeModelCleanses();
 			
-			for( var dex in values ){
+			for( dex in values ){
 				if ( values[dex] !== undefined && values[dex] !== null ){
 					if ( cleanses[dex] ){
 						this.model[dex] = cleanses[dex]( values[dex] );
@@ -122,7 +123,7 @@ bMoor.constructor.define({
 				}
 			}
 			
-			for( var dex in defaults ){
+			for( dex in defaults ){
 				if ( cleanses[dex] ){
 					this.model[dex] = cleanses[dex]( defaults[dex] );
 				}else{

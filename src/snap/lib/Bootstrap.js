@@ -38,7 +38,7 @@ bMoor.constructor.singleton({
 		},
 		done : function( cb ){
 			// I don't need to call right away, because it will get cycled and run anyway
-			if ( this._booting == 0 ){
+			if ( this._booting === 0 ){
 				cb();
 			}else{
 				this._render.push( cb );

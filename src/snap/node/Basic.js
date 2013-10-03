@@ -14,7 +14,7 @@ bMoor.constructor.define({
 		references : { 
 			'bMoor.module.Templator' : ['snap','templating','JQote'],
 			'bMoor.module.Bootstrap' : ['snap','lib','Bootstrap']
- 		}
+		}
 	},
 	onDefine : function( settings ){
 		var 
@@ -40,6 +40,7 @@ bMoor.constructor.define({
 			
 			$(document).ready(function(){
 				var 
+					action,
 					act,
 					className = '.'+dis.className.split(' ')[0], // the primary class should always be on the left
 					helpers = node.helpers ? node.helpers : {},
@@ -52,7 +53,7 @@ bMoor.constructor.define({
 					},
 					// TODO : maybe subselect goes away from here and into the controller?
 					makeSplitAction = function( action, subselect, func ){
-						if ( subselect == '' ){
+						if ( subselect === '' ){
 							$(document.body).on( action, className, function( event ){
 								func.call( this, event, this.node, helpers );
 							});
@@ -75,11 +76,11 @@ bMoor.constructor.define({
 					};
 				
 				// TODO : should prolly just make these an each
-				for( var action in node.globals ){
+				for( action in node.globals ){
 					makeGlobal( action, node.globals[action] );
 				}
 				
-				for( var action in node.actions ){
+				for( action in node.actions ){
 					makeAction( action, node.actions[action] );
 				}
 			});
@@ -147,12 +148,12 @@ bMoor.constructor.define({
 						.replace( /\{\{([^\?]+)\?([^:]+):([^\}]+)\}\}/g, 
 							function( match, arg1, arg2, arg3 ){
 								dis.classBindings.push( arg1 );
-								return '"+(model.'+arg1+'?"'+arg2+'":"'+arg3+'")+"'
+								return '"+(model.'+arg1+'?"'+arg2+'":"'+arg3+'")+"';
 							}
 						)
 						.replace( /\{\{([^\/?&]+)\}\}/g, function( match, arg1 ){
 								dis.classBindings.push( arg1 );
-								return '"+model.'+arg1+'+"' 
+								return '"+model.'+arg1+'+"';
 							}
 						) 
 					+ '";' );

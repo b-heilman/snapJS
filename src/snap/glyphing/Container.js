@@ -45,7 +45,7 @@ bMoor.constructor.define({
 				};
 				
 				onMouseout = function( event ){
-					if ( event.relatedTarget == null || event.relatedTarget.tagName.toUpperCase() == 'HTML' ){
+					if ( event.relatedTarget === null || event.relatedTarget.tagName.toUpperCase() === 'HTML' ){
 						onMouseup();
 					}
 				};
@@ -186,7 +186,7 @@ bMoor.constructor.define({
 				};
 			}else{
 				this.box = null;
-			};
+			}
 		},
 		_template : function( template ){
 			this.settings.template = template;
@@ -200,7 +200,7 @@ bMoor.constructor.define({
 		},
 		unlock : function(){
 			this.$.addClass( 'unlocked' );
-			this.locked = false
+			this.locked = false;
 			
 			return this;
 		},

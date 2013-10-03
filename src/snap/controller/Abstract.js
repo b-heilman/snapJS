@@ -23,7 +23,7 @@ bMoor.constructor.define({
 
 
 			if ( !controller.className ){
-				controller.className = 'snap-controller'
+				controller.className = 'snap-controller';
 			}
 
 			// TODO : this could prolly be merges with Node's code
@@ -74,7 +74,7 @@ bMoor.constructor.define({
 			});
 		}
 	},
-	construct : function( element, attributes, arguments, delay ){
+	construct : function( element, attributes, args, delay ){
 		this._parseAttributes( attributes );
 		this._parseArguments.apply( this, arguments );
 		
@@ -88,7 +88,11 @@ bMoor.constructor.define({
 		init : function( element ){
 			var 
 				dis = this,
-				stream;
+				derp = function( func ){
+					snap.lib.stream( stream ).bind( dis.observer, {}, function(){
+						func.apply( dis, arguments ); 
+					});
+				};
 
 			if ( !element ){
 				element = this.element;
@@ -101,17 +105,14 @@ bMoor.constructor.define({
 
 			this._pushObserver( this.element, this.observer );
 
-			for( stream in this._inStreams ){
+			// jsHint is giving me an error for declaring it higher...
+			for( var stream in this._inStreams ){
 				snap.lib.stream( stream ).bind( this.observer, this._inStreams[stream], this._outStreams[stream] );
 			}
 
 			for( stream in this._outStreams ) if ( !this._inStreams[stream] ){
 				if ( typeof(this._outStreams[stream]) == 'function' ){
-					(function( func ){
-						snap.lib.stream( stream ).bind( dis.observer, {}, function(){
-							func.apply( dis, arguments ); 
-						});
-					}( dis._outStreams[stream] ));
+					derp( dis._outStreams[stream] );
 				}else{
 					snap.lib.stream( stream ).bind( this.observer, {}, this._outStreams[stream] );
 				}

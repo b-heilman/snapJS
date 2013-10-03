@@ -58,7 +58,6 @@ bMoor.constructor.define({
 			var 
 				scope,
 				value = context,
-				variable,
 				test = typeof(variable) == 'string' ? variable.split('.') : variable,
 				i,
 				c;

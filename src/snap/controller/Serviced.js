@@ -4,6 +4,8 @@ bMoor.constructor.decorator({
 	name : 'Serviced',
 	namespace : ['snap','controller'],
 	onDefine : function( settings ){
+		var service;
+
 		if ( settings.services ){
 			if ( !this.services ){
 				this.services = {};

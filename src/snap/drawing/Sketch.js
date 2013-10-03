@@ -114,7 +114,7 @@ bMoor.constructor.define({
 		},
 		unlock : function(){
 			this.$.addClass( 'unlocked' );
-			this.locked = false
+			this.locked = false;
 			
 			return this;
 		}

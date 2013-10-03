@@ -26,7 +26,7 @@ bMoor.constructor.define({
 
 			if ( !this.mountPoint ){
 				// TODO : match by attribute value
-				mount = this._getAttribute('mount'),
+				mount = this._getAttribute('mount');
 				mountBelow = this._getAttribute('mountBelow');
 
 				if ( mount ){
@@ -73,7 +73,7 @@ bMoor.constructor.define({
 				removals = alterations.removals;
 				
 				if ( removals ){
-					for( var i in removals ){
+					for( i in removals ){
 						row = removals[ i ];
 						
 						if ( typeof(row) == 'object' ){
@@ -169,7 +169,7 @@ bMoor.constructor.define({
 
 			// TODO : rows -> nodes
 			if ( previous && previous._.rows ){
-				previous = previous._.rows[ previous._.rows.length - 1 ]
+				previous = previous._.rows[ previous._.rows.length - 1 ];
 			}else{
 				previous = this.mountPoint.above;
 			}

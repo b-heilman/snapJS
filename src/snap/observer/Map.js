@@ -34,11 +34,12 @@
 			},
 			simplify : function(){
 				var 
+					key,
 					model = this.model,
 					simple = {};
 
 				// TODO : what about models inside of models?
-				for( var key in model ) if ( model.hasOwnProperty(key) && key[0] != '_' && key[0] != '$' ){
+				for( key in model ) if ( model.hasOwnProperty(key) && key[0] != '_' && key[0] != '$' ){
 					val = model[ key ];
 
 					if ( typeof(val) == 'function' ){
@@ -48,16 +49,18 @@
 					simple[ key ] = val;
 				}
 
-				return simple
+				return simple;
 			},
 			isEmpty : function(){
-				var model = this.model;
+				var 
+					model = this.model,
+					key;
 
-				for( var key in model ) if ( model.hasOwnProperty(key) && key[0] != '_' && key[0] != '$' ){
+				for( key in model ) if ( model.hasOwnProperty(key) && key[0] != '_' && key[0] != '$' ){
 					return false;
 				}
 
-				return true
+				return true;
 			},
 			start : function( interval ){
 				var 
@@ -89,7 +92,7 @@
 
 				changes = this._clean();
 				if ( this._needNotify(changes) ){
-					for( var key in settings ){
+					for( key in settings ){
 						changes[ key ] = settings[ key ];
 					}
 					

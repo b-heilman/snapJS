@@ -32,8 +32,8 @@ bMoor.constructor.define({
 		}
 		
 		this.model.gap = {
-			left : parseInt( $glyph.css('padding-left') ) + parseInt( $glyph.css('border-left-width') ),
-			top  : parseInt( $glyph.css('padding-top') ) + parseInt( $glyph.css('border-top-width') )
+			left : parseInt( $glyph.css('padding-left'), 10 ) + parseInt( $glyph.css('border-left-width'), 10 ),
+			top  : parseInt( $glyph.css('padding-top'), 10 ) + parseInt( $glyph.css('border-top-width'), 10 )
 		};
 			
 		this.model._bind(function(){
@@ -129,10 +129,11 @@ bMoor.constructor.define({
 		},
 		setModelValues : function( values ){
 			var 
+				dex,
 				defaults = this.makeModelDefaults(),
 				cleanses = this.makeModelCleanses();
 			
-			for( var dex in values ){
+			for( dex in values ){
 				if ( values[dex] !== undefined && values[dex] !== null ){
 					if ( cleanses[dex] ){
 						this.model[dex] = cleanses[dex]( values[dex] );
@@ -144,7 +145,7 @@ bMoor.constructor.define({
 				}
 			}
 			
-			for( var dex in defaults ){
+			for( dex in defaults ){
 				if ( cleanses[dex] ){
 					this.model[dex] = cleanses[dex]( defaults[dex] );
 				}else{

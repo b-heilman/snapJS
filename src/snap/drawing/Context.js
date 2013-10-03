@@ -14,9 +14,9 @@ bMoor.constructor.define({
 			ratio = 1;
 		}
 		
-		if ( canvas == undefined ){
+		if ( canvas === undefined ){
 			console.trace();
-		}else if ( canvas[0] != undefined ){
+		}else if ( canvas[0] !== undefined ){
 			canvas = canvas[0];
 		}
 		
@@ -312,7 +312,7 @@ bMoor.constructor.define({
 		createRadialGradient : function( x0, y0, r0, x1, y1, r1 ){
 			var 
 				offset = Math.floor( this.ratio/2 ),
-				center = offset + .5;
+				center = offset + 0.5;
 			
 			x0 *= this.ratio + center; 
 			y0 *= this.ratio + center; 

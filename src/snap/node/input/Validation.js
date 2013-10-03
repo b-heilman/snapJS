@@ -8,12 +8,12 @@ bMoor.constructor.decorator({
 
 		value = this._getAttribute( 'min' );
 		if ( value ){
-			this.minVal = parseInt( value );
+			this.minVal = parseInt( value, 10 );
 		}
 
 		value = this._getAttribute( 'max' );
 		if ( value ){
-			this.maxVal = parseInt( value );
+			this.maxVal = parseInt( value, 10 );
 		}
 
 		value = this._getAttribute( 'match' );
@@ -49,7 +49,7 @@ bMoor.constructor.decorator({
 				valid = true;
 
 			if ( this._wrapped(value) !== false ){
-				number = parseInt( value );
+				number = parseInt( value, 10 );
 				
 				if ( this.maxVal && (number > this.maxVal || isNaN(number)) ){
 					valid = false;

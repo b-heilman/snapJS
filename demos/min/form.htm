@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+	<script src="../../external/jquery.min.js"></script>
+	<script src="../../build/snap.min.js"></script>
+</head>
+<body snap-controller="test.Control">
+
+<script>
+	var daMap = {
+		text : 'woot',
+		radio : 2,
+		checkbox : 1
+	};
+
+	bMoor.constructor.define({
+		name : 'Control',
+		namespace : [ 'test' ],
+		parent : [ 'snap','controller','Abstract' ],
+		properties : {
+			_delay : false,
+			_key : 'key',
+			_model : function(){
+				return daMap;
+			}
+		}
+	});
+</script>
+<form snap-node="snap.node.Basic" snap-visage="snap.node.Form">
+	<span snap-node="snap.node.Text" snap-scope="text"></span>
+	<label>text<input type='text' name='text' /></label>
+	<label>radio 1<input type='radio' name='radio' value='1' /></label>
+	<label>radio 2<input type='radio' name='radio' value='2' /></label>
+	<label>radio 3<input type='radio' name='radio' value='3' /></label>
+	<label>checkbox 1<input type='checkbox' name='checkbox[]' value='1' /></label>
+	<label>checkbox 2<input type='checkbox' name='checkbox[]' value='2' /></label>
+	<label>checkbox 3<input type='checkbox' name='checkbox[]' value='3' /></label>
+	<select name='derpy'>
+		<option>derp 1</option>
+		<option>derp 2</option>
+		<option>derp 3</option>
+		<option>derp 4</option>
+	</select>
+</form>
+<form snap-node="snap.node.Basic" snap-visage="snap.node.Form">
+	<label>text<input type='text' name='text' /></label>
+	<label>radio 1<input type='radio' name='radio' value='1' /></label>
+	<label>radio 2<input type='radio' name='radio' value='2' /></label>
+	<label>radio 3<input type='radio' name='radio' value='3' /></label>
+	<label>checkbox 1<input type='checkbox' name='checkbox[]' value='1' /></label>
+	<label>checkbox 2<input type='checkbox' name='checkbox[]' value='2' /></label>
+	<label>checkbox 3<input type='checkbox' name='checkbox[]' value='3' /></label>
+	<select name='derpy'>
+		<option>derp 1</option>
+		<option>derp 2</option>
+		<option>derp 3</option>
+		<option>derp 4</option>
+	</select>
+</form>
+
+</body>
+</html>

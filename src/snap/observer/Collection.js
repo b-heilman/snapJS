@@ -22,16 +22,20 @@
 			};
 
 			model.find = function( obj, fromIndex ){
+				var 
+					i, 
+					j;
+
 				if ( this.indexOf ){
 					return this.indexOf( obj, fromIndex );
 				}else{
-					if (fromIndex == null) {
+					if (fromIndex === null) {
 						fromIndex = 0;
 					} else if (fromIndex < 0) {
 						fromIndex = Math.max(0, this.length + fromIndex);
 					}
 
-					for (var i = fromIndex, j = this.length; i < j; i++) {
+					for ( i = fromIndex, j = this.length; i < j; i++ ) {
 						if (this[i] === obj)
 							return i;
 					}
@@ -57,6 +61,8 @@
 			_clean : function(){
 				var
 					i,
+					val,
+					key,
 					list,
 					model = this.model,
 					changes = {},
@@ -64,13 +70,13 @@
 					removals,
 					moves = {};
 
-				for( var key in model ) if ( model.hasOwnProperty(key) && key[0] != '_' ){
-					var val = model[key];
+				for( key in model ) if ( model.hasOwnProperty(key) && key[0] != '_' ){
+					val = model[key];
 					
 					if ( typeof(val) == 'function' ){
 						continue;
 					} else {
-						i = parseInt( key );
+						i = parseInt( key, 10 );
 
 						if ( isNaN(i) ){
 							if ( val != cleaned[key] ){
@@ -86,7 +92,7 @@
 							if ( val.$remove ){
 								// allow for a model to force its own removal
 								this.model.splice( i, 1 );
-							}else if ( val._.index == undefined ){
+							}else if ( val._.index === undefined ){
 								// new row added
 								moves[ key ] = val;
 							}else if ( val._.index != i ){

@@ -64,7 +64,11 @@ bMoor.constructor.define({
 			}
 		},
 		val : function( value ){
-			var element = this.element;
+			var 
+				i,
+				el,
+				checked,
+				element = this.element;
 
 			if ( value ){
 				if ( element.nodeName ){
@@ -74,24 +78,24 @@ bMoor.constructor.define({
 						element.checked = false;
 					}
 				}else{
-					var checked = this.checked;
+					checked = this.checked;
 						
 					this.checked = [];
 					
-					for( var i = 0; i < checked.length; i++ ){
+					for( i = 0; i < checked.length; i++ ){
 						checked[ i ].checked = false;
 					}
 					
 					if ( this.multi ){
-						if ( value.length == undefined || typeof(value) == 'string' ){
+						if ( value.length === undefined || typeof(value) === 'string' ){
 							value = [ value ];
 						}
 						
-						for( var i = 0; i < value.length; i++ ){
-							var e = this.map[ value[i] ];
-							if ( e ){
+						for( i = 0; i < value.length; i++ ){
+							el = this.map[ value[i] ];
+							if ( el ){
 								this.checked.push( e );
-								e.checked = true;
+								el.checked = true;
 							}
 						}
 					}else{
@@ -99,10 +103,10 @@ bMoor.constructor.define({
 							value = value.pop();
 						}
 						
-						var e = this.map[ value ];
-						if ( e ){
-							this.checked.push( e );
-							e.checked = true;
+						el = this.map[ value ];
+						if ( el ){
+							this.checked.push( el );
+							el.checked = true;
 						}
 					}
 				}
@@ -117,8 +121,8 @@ bMoor.constructor.define({
 					if ( this.multi ){
 						var rtn = [];
 						
-						for( var i = 0, c = element.length; i < c; i++ ){
-							var el = element[i];
+						for( i = 0, c = element.length; i < c; i++ ){
+							el = element[i];
 							if ( el.checked ){
 								rtn.push( el.value );
 							}
@@ -126,8 +130,8 @@ bMoor.constructor.define({
 						
 						return rtn;
 					}else{
-						for( var i = element.length - 1; i >= 0; i-- ){
-							var el = element[i];
+						for( i = element.length - 1; i >= 0; i-- ){
+							el = element[i];
 							if ( el.checked ){
 								return el.value;
 							}
@@ -139,18 +143,18 @@ bMoor.constructor.define({
 			}
 		},
 		alter : function( cb ){
-			var dis = this;
+			var 
+				dis = this,
+				derp = function(){
+                                        cb( dis.val() );
+                                };
 			
 			if ( this.element.nodeName ){
-				this.element.onchange = function(){
-					cb( dis.val() );
-				};
+				this.element.onchange = derp;
 			}else{
 				for( var i = 0, c = this.element.length; i < c; i++ ){
 					// TODO : can I limit this to one call for radio?
-					this.element[i].onchange = function(){
-						cb( dis.val() );
-					};
+					this.element[i].onchange = derp;
 				}
 			}
 		}

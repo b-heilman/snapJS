@@ -3,9 +3,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<script src="../../external/jquery.min.js"></script>
-	<script src="../../external/bmoor.min.js" root="../../src"></script>
-	<script src="../../src/snap/service/Abstract.js"></script>
-	<script src="../../src/snap/node/List.js"></script>
+	<script src="../../build/snap.min.js"></script>
 
 	<script>
 		(function( global ){
@@ -30,7 +28,7 @@
 			bMoor.constructor.singleton({
 				name : 'Service',
 				namespace : [ 'test' ],
-				parent : [ 'snap','service','Abstract' ],
+				parent : [ 'bmoor','service','Abstract' ],
 				properties : {
 					_create : 'http://create/:label/description?blar=:display&asdsdas=asdads',
 					_update : 'http://update/:description/:label?blar=:display',
@@ -41,7 +39,7 @@
 			bMoor.constructor.singleton({
 				name : 'Controller',
 				namespace : [ 'test' ],
-				parent : [ 'snap','controller','Abstract' ],
+				parent : [ 'bmoor','controller','Abstract' ],
 				services : { 'test' : ['test','Service'] },
 				functions : {
 					sum : function(){ return parseInt(this.eins) + parseInt(this.zwei); }
@@ -68,7 +66,7 @@
 					},
 					_key : 'key',
 					_model : function(){
-						return new snap.model.Collection( lowData );
+						return new bmoor.model.Collection( lowData );
 					},
 					_sendCreate : function( data ){
 						this._.test.create( data );
@@ -85,7 +83,7 @@
 	</script>
 </head>
 <body snap-controller="test.Controller">
-	<table snap-node="snap.node.List" snap-mount="mount" snap-template="temp">
+	<table snap-node="bmoor.snap.List" snap-mount="mount" snap-template="temp">
 		<tbody>
 			<tr mount>
 				<th>Yay</th>
@@ -100,13 +98,13 @@
 	</table>
 	<button class='row-add'> Add Row </button>
 	<script id='temp' type='text/html'>
-		<td><span snap-node='snap.node.Text' type='text' snap-variable="sum"></span></td>
-		<td><input snap-node='snap.node.input.Text' type='text' name='description'/></td>
-        <td><input snap-node='snap.node.input.Text' type='text' name='label'/></td>
-        <td><input snap-node='snap.node.input.Text' type='text' name='display'/></td>
-        <td><input snap-node='snap.node.input.Text' type='text' name='eins'/></td>
-        <td><input snap-node='snap.node.input.Text' type='text' name='zwei'/></td>
-        <td><button snap-node='snap.node.input.Button' type='button' snap-variable='_.remove' name='remove' value="1">Remove</button></td>
+		<td><span snap-node='bmoor.snap.Text' type='text' snap-variable="sum"></span></td>
+		<td><input snap-node='bmoor.snap.form.Text' type='text' name='description'/></td>
+        <td><input snap-node='bmoor.snap.form.Text' type='text' name='label'/></td>
+        <td><input snap-node='bmoor.snap.form.Text' type='text' name='display'/></td>
+        <td><input snap-node='bmoor.snap.form.Text' type='text' name='eins'/></td>
+        <td><input snap-node='bmoor.snap.form.Text' type='text' name='zwei'/></td>
+        <td><button snap-node='bmoor.snap.form.Button' type='button' snap-variable='_.remove' name='remove' value="1">Remove</button></td>
 	</script>
 </body>
 

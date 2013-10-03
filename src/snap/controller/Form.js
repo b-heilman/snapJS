@@ -14,7 +14,7 @@ bMoor.constructor.decorator({
 				errors = {},
 				count = 0;
 
-			if ( model.$isValid == undefined ){
+			if ( model.$isValid === undefined ){
 				model.$errors = [];
 				model.$messages = [];
 				model.$isValid = false;
@@ -42,10 +42,10 @@ bMoor.constructor.decorator({
 				model.$addChange = function( node ){
 					changes[ node.nodeId ] = node;
 
-					if ( count == 0 ) {
+					if ( count === 0 ) {
 						this.$isValid = true;
 					}
-				}
+				};
 
 				model.$appoveChanges = function(){
 					var key;
@@ -54,7 +54,7 @@ bMoor.constructor.decorator({
 						changes[key].lockValue();
 						changes[key].clearState();
 					}
-				}
+				};
 			}
 
 			// handle the reset requests
@@ -79,7 +79,7 @@ bMoor.constructor.decorator({
 				model.$messages = [];
 
 				dis.sendPush( function(){
-					if ( model.$errors.length == 0 ){
+					if ( model.$errors.length === 0 ){
 						model.$appoveChanges();
 						model.$isValid = false;
 					}

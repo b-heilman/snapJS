@@ -19,15 +19,18 @@ bMoor.constructor.mutate({
 			var dis = this;
 			
 			this.collection._bind(function( changes ){
-				var collection = dis.collection;
+				var 
+					i,
+					c,
+					collection = dis.collection;
 					
-				if ( changes == null ){
-					for( var i = 0, c = collection.length; i < c; i++ ){
+				if ( changes === null ){
+					for( i = 0, c = collection.length; i < c; i++ ){
 						dis.addGlyph( collection[i] );
 					}
 				}else{
 					if ( changes.additions ){
-						for( var i = 0, c = changes.additions.length; i < c; i++ ){
+						for( i = 0, c = changes.additions.length; i < c; i++ ){
 							dis.addGlyph( collection[changes.additions[i]] );
 						}
 					}
