@@ -149,6 +149,21 @@ bMoor.constructor.define({
 			
 			element.observer = observer;
 		},
+		_closestNode : function( constructor ){
+			var
+				element = this.element.parentNode,
+				node;
+
+			while( element && node === undefined ){
+				if ( element.node && element.node instanceof constructor ){
+					node = element.node;
+				}
+
+				element = element.parentNode;
+			}
+
+			return node;
+		},
 		_select : function( selector, element ){
 			if ( !element ){
 				element = this.element;
@@ -1153,8 +1168,10 @@ bMoor.constructor.define({
 			}
 			this.nodeId = nodesCount++;
 			
-			this._initElement( element );
-			
+			this.$ = this._initElement( element );
+			this.$.data( 'node', this ); // TODO : kinda wanna get ride of this?
+			element.node = this;
+
 			this.observer = this._observe( this._initModel() );
 			this._pushObserver( this.element, this.observer );
 			
@@ -1168,12 +1185,7 @@ bMoor.constructor.define({
 				controller,
 				attr;
 
-			this.$ = $( element );
-			this.$.data( 'node', this ); // TODO : kinda wanna get ride of this?
-
 			this['snap.Core']._initElement.call( this, element );
-
-			element.node = this;
 
 			// install a default controller
 			// TODO : a better way to do this?
@@ -1204,6 +1216,8 @@ bMoor.constructor.define({
 			}else{
 				element.className = this.baseClass + ' ' + element.className;
 			}
+
+			return $( element );
 		},
 		_initModel : function(){
 			var 
@@ -1258,11 +1272,14 @@ bMoor.constructor.define({
 					dis._prepContent( this.model, alterations );
 				}
 
+				dis._onAlteration( this.model, alterations );
+
 				if ( dis.makeClass && dis._needClassUpdate(alterations) ){
 					dis._updateClass( this.model );
 				}
 			});
 		},
+		_onAlteration : function( model, alterations ){},
 		_makeBindings : function(){
 			var attr = this._getAttribute('binding');
 
@@ -1550,11 +1567,13 @@ bMoor.constructor.define({
 	},
 	properties: {
 		_initElement : function( element ){
-			this['snap.node.View']._initElement.call( this, element );
+			var $el = this['snap.node.View']._initElement.call( this, element );
 			
-			this.isTable = ( this.element.tagName == 'TABLE' );
+			this.isTable = ( element.tagName == 'TABLE' );
 			
 			this.mountPoint = null;
+
+			return $el;
 		},
 		_makeTemplate : function(){
 			var 
@@ -1844,9 +1863,9 @@ bMoor.constructor.define({
 			this.val( data );
 		},
 		_initElement : function( element ){
-			this['snap.node.Basic']._initElement.call( this, element );
-
 			this.root = this._findRoot();
+
+			return this['snap.node.Basic']._initElement.call( this, element );
 		},
 		_initModel : function(){
 			var model = this['snap.node.Basic']._initModel.call( this );
@@ -1972,8 +1991,6 @@ bMoor.constructor.define({
 				e,
 				i;
 
-			this['snap.node.Basic']._initElement.call( this, element );
-
 			this.checked = [];
 			this.map = {};
 			this.multi = false;
@@ -1999,6 +2016,8 @@ bMoor.constructor.define({
 					}
 				}
 			}
+
+			return this['snap.node.Basic']._initElement.call( this, element );
 		},
 		_initModel : function( context ){
 			var 
@@ -2229,13 +2248,11 @@ bMoor.constructor.define({
 	namespace : ['snap','node','input'],
 	parent : ['snap','node','input','Basic'],
 	properties: {
-		_element : function ( element ){
+		_initElement : function ( element ){
 			var 
 				selected,
 				i,
 				c;
-
-			this['snap.node.input.Basic']._element.call( this, element );
 
 			selected = this._select('[selected]');
 
@@ -2249,6 +2266,8 @@ bMoor.constructor.define({
 			}
 
 			this.val( selected.value );
+
+			return this['snap.node.input.Basic']._initElement.call( this, element );
 		},
 		lockValue : function(){
 			if ( this.oldOption ){
