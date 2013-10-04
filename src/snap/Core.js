@@ -148,6 +148,21 @@ bMoor.constructor.define({
 			
 			element.observer = observer;
 		},
+		_closestNode : function( constructor ){
+			var
+				element = this.element.parentNode,
+				node;
+
+			while( element && node === undefined ){
+				if ( element.node && element.node instanceof constructor ){
+					node = element.node;
+				}
+
+				element = element.parentNode;
+			}
+
+			return node;
+		},
 		_select : function( selector, element ){
 			if ( !element ){
 				element = this.element;

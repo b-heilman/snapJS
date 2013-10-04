@@ -5,13 +5,11 @@ bMoor.constructor.define({
 	namespace : ['snap','node','input'],
 	parent : ['snap','node','input','Basic'],
 	properties: {
-		_element : function ( element ){
+		_initElement : function ( element ){
 			var 
 				selected,
 				i,
 				c;
-
-			this['snap.node.input.Basic']._element.call( this, element );
 
 			selected = this._select('[selected]');
 
@@ -25,6 +23,8 @@ bMoor.constructor.define({
 			}
 
 			this.val( selected.value );
+
+			return this['snap.node.input.Basic']._initElement.call( this, element );
 		},
 		lockValue : function(){
 			if ( this.oldOption ){

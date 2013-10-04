@@ -109,8 +109,10 @@ bMoor.constructor.define({
 			}
 			this.nodeId = nodesCount++;
 			
-			this._initElement( element );
-			
+			this.$ = this._initElement( element );
+			this.$.data( 'node', this ); // TODO : kinda wanna get ride of this?
+			element.node = this;
+
 			this.observer = this._observe( this._initModel() );
 			this._pushObserver( this.element, this.observer );
 			
@@ -124,12 +126,7 @@ bMoor.constructor.define({
 				controller,
 				attr;
 
-			this.$ = $( element );
-			this.$.data( 'node', this ); // TODO : kinda wanna get ride of this?
-
 			this['snap.Core']._initElement.call( this, element );
-
-			element.node = this;
 
 			// install a default controller
 			// TODO : a better way to do this?
@@ -160,6 +157,8 @@ bMoor.constructor.define({
 			}else{
 				element.className = this.baseClass + ' ' + element.className;
 			}
+
+			return $( element );
 		},
 		_initModel : function(){
 			var 
@@ -214,11 +213,14 @@ bMoor.constructor.define({
 					dis._prepContent( this.model, alterations );
 				}
 
+				dis._onAlteration( this.model, alterations );
+
 				if ( dis.makeClass && dis._needClassUpdate(alterations) ){
 					dis._updateClass( this.model );
 				}
 			});
 		},
+		_onAlteration : function( model, alterations ){},
 		_makeBindings : function(){
 			var attr = this._getAttribute('binding');
 

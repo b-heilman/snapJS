@@ -12,11 +12,13 @@ bMoor.constructor.define({
 	},
 	properties: {
 		_initElement : function( element ){
-			this['snap.node.View']._initElement.call( this, element );
+			var $el = this['snap.node.View']._initElement.call( this, element );
 			
-			this.isTable = ( this.element.tagName == 'TABLE' );
+			this.isTable = ( element.tagName == 'TABLE' );
 			
 			this.mountPoint = null;
+
+			return $el;
 		},
 		_makeTemplate : function(){
 			var 

@@ -11,8 +11,6 @@ bMoor.constructor.define({
 				e,
 				i;
 
-			this['snap.node.Basic']._initElement.call( this, element );
-
 			this.checked = [];
 			this.map = {};
 			this.multi = false;
@@ -38,6 +36,8 @@ bMoor.constructor.define({
 					}
 				}
 			}
+
+			return this['snap.node.Basic']._initElement.call( this, element );
 		},
 		_initModel : function( context ){
 			var 

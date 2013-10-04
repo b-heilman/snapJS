@@ -15,9 +15,9 @@ bMoor.constructor.define({
 			this.val( data );
 		},
 		_initElement : function( element ){
-			this['snap.node.Basic']._initElement.call( this, element );
-
 			this.root = this._findRoot();
+
+			return this['snap.node.Basic']._initElement.call( this, element );
 		},
 		_initModel : function(){
 			var model = this['snap.node.Basic']._initModel.call( this );
