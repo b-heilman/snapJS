@@ -2,13 +2,13 @@
 
 bMoor.constructor.mutate({
 	name : 'Controller',
-	namespace : ['bmoor','glyphing'],
+	namespace : ['snap','glyphing'],
 	require: [
-		['bmoor','glyphing','Glyph']
+		['snap','glyphing','Glyph']
 	],
-	parent : ['bmoor','node','View'],
+	parent : ['snap','node','View'],
 	decorators : [
-		['bmoor','node','Form']
+		['snap','node','Form']
 	],
 	properties : { 
 		_model : function(){
