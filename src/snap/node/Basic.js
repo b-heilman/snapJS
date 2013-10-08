@@ -110,6 +110,11 @@ bMoor.constructor.define({
 			this.nodeId = nodesCount++;
 			
 			this.$ = this._initElement( element );
+
+			if ( !this.$ ){
+				throw this.__class+' forgot to return a jQuery object';
+			}
+
 			this.$.data( 'node', this ); // TODO : kinda wanna get ride of this?
 			element.node = this;
 

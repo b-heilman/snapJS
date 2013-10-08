@@ -1,8 +1,8 @@
 ;(function( $, global, undefined ){
 bMoor.constructor.define({
 	name : 'Glyph',
-	namespace : ['bmoor','glyphing'],
-	require: [ ['bmoor','drawing','Sketch'] ],
+	namespace : ['snap','glyphing'],
+	require: [ ['snap','drawing','Sketch'] ],
 	construct : function( settings, limits, $root ){
 		var
 			dis = this,
@@ -77,7 +77,7 @@ bMoor.constructor.define({
 	properties : {
 		// glyphing setters
 		makeModel : function(){
-			return new bmoor.observer.Map({});
+			return new snap.observer.Map({});
 		},
 		makeModelCleanses : function(){
 			return {
