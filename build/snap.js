@@ -229,12 +229,22 @@ bMoor.constructor.singleton({
 		preRender : function( cb ){
 			this._preRender = cb;
 		},
-		done : function( cb ){
-			// I don't need to call right away, because it will get cycled and run anyway
-			if ( this._booting === 0 ){
-				cb();
+		done : function( id, cb ){
+			if ( cb === undefined ){
+				cb = id;
+
+				// I don't need to call right away, because it will get cycled and run anyway
+				if ( this._booting === 0 ){
+					cb();
+				}else{
+					this._render.push( cb );
+				}
 			}else{
-				this._render.push( cb );
+				if ( this._render[id] === undefined ){
+					this._render[id] = [];
+				}
+
+				this._render[id].push( cb );
 			}
 		},
 		stop : function(){
@@ -254,6 +264,7 @@ bMoor.constructor.singleton({
 		_buildNode : function( waiting, element ){
 			// context -> model -> scope -> variable
 			var
+				dis = this,
 				create = element.getAttribute('snap-node'),
 				requirements = [],
 				visages = [];
@@ -273,6 +284,7 @@ bMoor.constructor.singleton({
 				build : function(){
 					var 
 						i,
+						renders,
 						node = bMoor.get( create ),
 						el = new node( element, {}, true );
 					
@@ -281,6 +293,16 @@ bMoor.constructor.singleton({
 					}
 					
 					el.init();
+					
+					if ( element.id && dis._render[ element.id ]){
+						renders = dis._render[ element.id ];
+
+						for( i = 0; i < renders.length; i++ ){
+							renders[i]( el );
+						}
+
+						delete dis._render[ element.id ];
+					}
 				}
 			};
 		},
@@ -1169,6 +1191,11 @@ bMoor.constructor.define({
 			this.nodeId = nodesCount++;
 			
 			this.$ = this._initElement( element );
+
+			if ( !this.$ ){
+				throw this.__class+' forgot to return a jQuery object';
+			}
+
 			this.$.data( 'node', this ); // TODO : kinda wanna get ride of this?
 			element.node = this;
 
