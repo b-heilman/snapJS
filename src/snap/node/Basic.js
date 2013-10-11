@@ -178,7 +178,7 @@ bMoor.constructor.define({
 				scope,
 				model = this['snap.Core']._initModel.call( this );
 			
-			//if ( !this.element.controller ){
+			if ( !this.element.controller ){
 				attr = this._getAttribute( 'observe' );
 				if ( attr ){
 					scope = attr.split('.');
@@ -195,6 +195,8 @@ bMoor.constructor.define({
 
 					this.observing = true;
 				}else{
+					// TODO : merge with snap.controller.Abstract
+
 					attr = this._getAttribute( 'scope', this.element.name );
 					
 					if ( attr ){
@@ -213,7 +215,7 @@ bMoor.constructor.define({
 						}
 					}
 				}
-			//}
+			}
 			
 			return model;
 		},

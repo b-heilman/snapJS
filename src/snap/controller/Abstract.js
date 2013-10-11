@@ -136,25 +136,35 @@ bMoor.constructor.define({
 			this.args = arguments;
 		},
 		// make models observes that are then linked...
+		_model : function( parentModel ){
+			return parentModel;
+		},
 		_initModel : function(){
 			var 
 				info,
-				attr,
-				model = this._model 
-					? this._model( this['snap.Core']._initModel.call(this) ) 
-					: this['snap.Core']._initModel.call( this );
+				scope,
+				model = this['snap.Core']._initModel.call(this);
 
-			attr = this._getAttribute( 'model' ); // allow redirecting the model
+			// TODO : merge with snap.controller.Abstract
+			scope = this._getAttribute( 'scope', this.element.name );
 			
-			if ( attr && typeof(attr) == 'string' ){
-				info = this._unwrapVar( model, attr, true );
+			if ( scope ){
+				scope = scope.split('.');
+				info = this._unwrapVar( model, scope, true );
 
-				if ( info ){
+				if ( !info ){
+					// TODO : what do I do?
+				}else if ( typeof(info.value) == 'object' ){
+					// if scope is a model, make it he model we watch
+					this.variable = null;
 					model = info.value;
+				}else{
+					this.variable = info.variable;
+					model = info.scope;
 				}
 			}
 
-			return model;
+			return this._model( model );
 		},
 		_initElement : function( element ){
 			this['snap.Core']._initElement.call( this, element );
