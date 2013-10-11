@@ -7,11 +7,12 @@ bMoor.constructor.define({
 	properties: {
 		_initElement : function ( element ){
 			var 
+				$el = this['snap.node.input.Basic']._initElement.call( this, element ),
 				selected,
 				i,
 				c;
 
-			selected = this._select('[selected]');
+			selected = this._select( '[selected]', element );
 
 			if ( selected.length ){
 				for( i = 0, c = selected.length; i < c; i++ ){
@@ -19,12 +20,12 @@ bMoor.constructor.define({
 				}
 				selected = selected[ selected.length-1 ];
 			}else{
-				selected = this.element.options[0];
+				selected = element.options[0];
 			}
 
 			this.val( selected.value );
 
-			return this['snap.node.input.Basic']._initElement.call( this, element );
+			return $el;
 		},
 		lockValue : function(){
 			if ( this.oldOption ){

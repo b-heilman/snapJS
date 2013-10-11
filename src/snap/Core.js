@@ -102,18 +102,18 @@ bMoor.constructor.define({
 			return adjustment ? adjustment( attr ) : attr;
 		},
 		_findElementWithProperty : function( property, element ){
-			var node = element || this.element;
+			var el = element || this.element;
 
-			if ( node ){
-				if ( !node.hasAttribute ){
-					node = node[ 0 ];
+			if ( el ){
+				if ( !el.hasAttribute ){
+					el = el[ 0 ];
 				}
 
-				while( node.tagName != 'HTML' ){
-					if ( node[property] ){ 
-						return node; 
+				while( el.tagName != 'HTML' ){
+					if ( el[property] ){ 
+						return el; 
 					}
-					node = node.parentNode;
+					el = el.parentNode;
 				}
 			}
 
@@ -167,7 +167,7 @@ bMoor.constructor.define({
 			if ( !element ){
 				element = this.element;
 			}
-
+			
 			if ( element.querySelectorAll ){
 				return element.querySelectorAll( selector );
 			}else{

@@ -103,6 +103,7 @@ bMoor.constructor.define({
 		init : function( element ){
 			this.classBindings = [];
 			this.makeClass = null;
+			this.observing = false;
 
 			if ( !element ){
 				element = this.element;
@@ -119,7 +120,6 @@ bMoor.constructor.define({
 			element.node = this;
 
 			this.observer = this._observe( this._initModel() );
-			this._pushObserver( this.element, this.observer );
 			
 			this._bind();
 
@@ -137,7 +137,13 @@ bMoor.constructor.define({
 			// TODO : a better way to do this?
 			if ( !element.controller && this.defaultController ){
 				controller = bMoor.get( this.defaultController );
-				new controller( element );
+
+				if ( !controller ){
+					throw 'defaultController could not be found for node ('
+						+ this.__class + ') : ' + this.defaultController;
+				}else{
+					new controller( element );
+				}
 			}
 			
 			attr = this._getAttribute( 'class' );
@@ -172,40 +178,43 @@ bMoor.constructor.define({
 				scope,
 				model = this['snap.Core']._initModel.call( this );
 			
-			attr = this._getAttribute( 'observe' );
-			if ( attr ){
-				scope = attr.split('.');
-				info = this._unwrapVar( model, scope, true );
-
-				if ( info.value instanceof snap.observer.Map ){
-					model = info.value.model;
-				}else if ( typeof(info.value) == 'object' ){
-					model = info.scope;
-					this.variable = info.variable;
-					new snap.observer.Map( info.value );
-				}else{
-					throw 'Trying to observe, but no observer.Map found';
-				}
-			}else{
-				attr = this._getAttribute( 'scope', this.element.name );
-				
+			//if ( !this.element.controller ){
+				attr = this._getAttribute( 'observe' );
 				if ( attr ){
 					scope = attr.split('.');
 					info = this._unwrapVar( model, scope, true );
 
-					if ( !info ){
-						// TODO : what do I do?
+					if ( info.value instanceof snap.observer.Map ){
+						model = info.value.model;
 					}else if ( typeof(info.value) == 'object' ){
-						// if scope is a model, make it he model we watch
-						this.variable = null;
-						model = info.value;
-					}else{
-						this.variable = info.variable;
 						model = info.scope;
+						this.variable = info.variable;
+					}else{
+						throw 'Trying to observe, but no observer.Map found';
+					}
+
+					this.observing = true;
+				}else{
+					attr = this._getAttribute( 'scope', this.element.name );
+					
+					if ( attr ){
+						scope = attr.split('.');
+						info = this._unwrapVar( model, scope, true );
+
+						if ( !info ){
+							// TODO : what do I do?
+						}else if ( typeof(info.value) == 'object' ){
+							// if scope is a model, make it he model we watch
+							this.variable = null;
+							model = info.value;
+						}else{
+							this.variable = info.variable;
+							model = info.scope;
+						}
 					}
 				}
-			}
-
+			//}
+			
 			return model;
 		},
 		_bind : function(){
@@ -292,12 +301,15 @@ bMoor.constructor.define({
 			if ( this.variable ){
 				value = data[this.variable];
 
-				if ( typeof(data) == 'function' ){ 
+				if ( typeof(value) == 'function' ){ 
 					value = data[this.variable](); 
 				}
 			}else{
 				value = data;
 			}
+
+			// set up the observer for any children created
+			this._pushObserver( this.element, this.observing ? this._observe(value) : this.observer );
 
 			if ( this._makeContent( value, alterations ) ){
 				bMoor.module.Bootstrap.done(function(){
@@ -306,9 +318,7 @@ bMoor.constructor.define({
 			}
 		},
 		// TODO : change to _updateContent
-		_makeContent : function( data, alterations ){ 
-			return true;
-		},
+		_makeContent : function( data, alterations ){ return true; },
 		_finalizeContent : function(){},
 		_finalize : function(){}
 	}

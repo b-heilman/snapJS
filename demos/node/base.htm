@@ -49,14 +49,14 @@
 	});
 }( this ));
 </script>
-
-<ul snap-node="snap.node.List" snap-template="list1" snap-controller="test.Controller" snap-scope="list"></ul>
-<ul snap-node="snap.node.List" snap-template="list1" snap-controller="test.Controller" snap-scope="list" snap-mountBelow='true'>
-	<li mountBelow>This is a pre existing thing</li>
-	<li>This should be the footer</li>
-</ul>
-<div snap-node="snap.node.View" snap-template="template1" snap-controller="test.Controller"> Loading... </div>
-
+<div snap-controller="test.Controller">
+	<ul snap-node="snap.node.List" snap-template="list1"  snap-scope="list"></ul>
+	<ul snap-node="snap.node.List" snap-template="list1"  snap-scope="list" snap-mountBelow='true'>
+		<li mountBelow>This is a pre existing thing</li>
+		<li>This should be the footer</li>
+	</ul>
+	<div snap-node="snap.node.View" snap-template="template1"> Loading... </div>
+</div>
 <script type="text/html" id="template1">
 <![CDATA[
 	<b><#= this.foo #></b>

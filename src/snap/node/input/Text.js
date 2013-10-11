@@ -21,6 +21,10 @@ bMoor.constructor.define({
 			this.element.setAttribute( 'value', this.val() );
 		},
 		val : function( value ){
+			if ( value === undefined ){
+				value = '';
+			}
+
 			if ( arguments.length ){
 				this.element.value = value;
 			}else{

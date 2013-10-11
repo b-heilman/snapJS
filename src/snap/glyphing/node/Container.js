@@ -7,15 +7,8 @@ bMoor.constructor.define({
 	require: [
 		['bmoor','lib','MouseTracker'],
 		['snap','glyphing','model','Glyph'],
-		['snap','glyphing','controller','General'],
 		['snap','observer','Collection']
 	],
-	statics : {
-		settings : {
-			keepBoxed : true,
-			glyphSettings : {}
-		}
-	},
 	node : {
 		className : 'glyphing-container',
 		helpers : {
@@ -38,9 +31,9 @@ bMoor.constructor.define({
 					onMouseout = null;
 						
 				onMouseup = function(){
-					$(document.body).unbind( 'mousemove', onMove );
 					$(document.body).unbind( 'mouseup', onMouseup );
 					$(document.body).unbind( 'mouseout', onMouseout );
+					$(document.body).unbind( 'mousemove', onMove );
 				};
 				
 				onMouseout = function( event ){
@@ -140,13 +133,15 @@ bMoor.constructor.define({
 					var 
 						model = node.observer.model,
 						offset = node.$.offset(),
-						glyph = new snap.glyphing.model.Glyph(
+						glyph = node._makeGlyph(
 							model.box,
 							helpers.lastPosition.x - offset.left,
 							helpers.lastPosition.y - offset.top
 						);
 					
-					glyph.instanceClass = model.glyphClass;
+					if ( !glyph.instanceClass ){
+						glyph.instanceClass = model.glyphClass;
+					}
 
 					if ( !model.locked ){
 						if ( node.observer.model.active ){
@@ -163,10 +158,17 @@ bMoor.constructor.define({
 			}
 		}
 	},
+	statics : {
+		settings : {
+			keepBoxed : true
+		},
+		glyphSettings : {
+
+		}
+	},
 	properties : {
 		defaultTemplate : 'glyphing-container-insert',
-        defaultController : ['snap','glyphing','controller','General'],
-		_initModel : function( parentModel ){
+        _initModel : function( parentModel ){
 			var 
 				model = this['snap.node.List']._initModel.call( this, parentModel ),
 				$img = this.$.find('img'),
@@ -208,6 +210,9 @@ bMoor.constructor.define({
 			}
 
 				return model;
+		},
+		_makeGlyph : function( box, leftCenter, topCenter ){
+			return new snap.glyphing.model.Glyph( box, leftCenter, topCenter );
 		},
 		lock : function(){
 			this.$.removeClass( 'unlocked' );

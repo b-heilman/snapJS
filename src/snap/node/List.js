@@ -14,8 +14,8 @@ bMoor.constructor.define({
 		_initElement : function( element ){
 			var $el = this['snap.node.View']._initElement.call( this, element );
 			
+			this.rows = {};
 			this.isTable = ( element.tagName == 'TABLE' );
-			
 			this.mountPoint = null;
 
 			return $el;
@@ -65,6 +65,7 @@ bMoor.constructor.define({
 			var
 				i,
 				c,
+				r,
 				row,
 				rows,
 				moves,
@@ -77,18 +78,20 @@ bMoor.constructor.define({
 				if ( removals ){
 					for( i in removals ){
 						row = removals[ i ];
-						
+						// row is a Map here
 						if ( typeof(row) == 'object' ){
 							// this means it was removed, otherwise it would be a number
-							rows = row._.rows; // reference the row element
+							rows = this.rows[row._.snapid]; // reference the row by snap id
 
 							for( i = 0, c = rows.length; i < c; i++ ){
-								row = rows[i];
+								r = rows[i];
 								
-								if ( row.parentNode ){
-									row.parentNode.removeChild( row );
+								if ( r.parentNode ){
+									r.parentNode.removeChild( r );
 								}
 							}
+
+							delete this.rows[row._.snapid];
 						}
 					}
 				}
@@ -165,34 +168,37 @@ bMoor.constructor.define({
 				nodes,
 				node,
 				next,
-				observer = model._,
+				rowContent,
 				els,
-				element;
+				element,
+				observer = model._;
 
 			// TODO : rows -> nodes
-			if ( previous && previous._.rows ){
-				previous = previous._.rows[ previous._.rows.length - 1 ];
+			if ( previous && (rowContent = this.rows[previous._.snapid]) ){
+				previous = rowContent[ rowContent.length - 1 ];
 			}else{
 				previous = this.mountPoint.above;
 			}
 
-			if ( !observer.rows ){
+			rowContent = this.rows[ model._.snapid ];
+
+			if ( !rowContent ){
 				els = this._makeChildren( model, template );
 
-				observer.rows = [];
+				rowContent = this.rows[ model._.snapid ] = [];
 
 				element = els.firstChild;
 
 				while( element ){
 					this._pushObserver( element, observer );
-					observer.rows.push( element );
+					rowContent.push( element );
 					
 					element = element.nextSibling;
 				}
 			}
-			
-			for( i = 0, nodes = observer.rows, c = nodes.length; i < c; i++ ){
-				element = nodes[i];
+
+			for( i = 0, c = rowContent.length; i < c; i++ ){
+				element = rowContent[i];
 
 				this._insert( element, previous );
 				this._finalizeElement( element );

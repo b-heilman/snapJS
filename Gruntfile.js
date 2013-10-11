@@ -19,10 +19,11 @@ module.exports = function(grunt) {
 			dist: {
 				src: [
 					'external/bmoor.min.js',
-					'src/snap/Core.js', 
-					'src/snap/lib/Bootstrap.js',
 					'src/snap/observer/Map.js',
 					'src/snap/observer/Collection.js',
+					'src/snap/Core.js', 
+					'src/snap/lib/Bootstrap.js',
+					'src/snap/lib/Stream.js',
 					'src/snap/service/Abstract.js',
 					'src/snap/templating/Decorator.js',
 					'src/jquery/jquery.jqote2.js',
@@ -35,7 +36,6 @@ module.exports = function(grunt) {
 					'src/snap/node/Style.js',
 					'src/snap/node/Switch.js',
 					'src/snap/node/List.js',
-					'src/snap/node/Form.js',
 					'src/snap/node/input/Basic.js',
 					'src/snap/node/input/Text.js',
 					'src/snap/node/input/Checked.js',
@@ -45,6 +45,7 @@ module.exports = function(grunt) {
 					'src/snap/node/input/Required.js',
 					'src/snap/node/input/Select.js',
 					'src/snap/node/input/Validation.js',
+					'src/snap/node/Form.js',
 					'src/snap/controller/Abstract.js',
 					'src/snap/controller/Form.js',
 					'src/snap/controller/Serviced.js'

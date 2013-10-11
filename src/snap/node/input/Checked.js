@@ -94,7 +94,7 @@ bMoor.constructor.define({
 						for( i = 0; i < value.length; i++ ){
 							el = this.map[ value[i] ];
 							if ( el ){
-								this.checked.push( e );
+								this.checked.push( el );
 								el.checked = true;
 							}
 						}

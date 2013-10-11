@@ -59,14 +59,12 @@
 
     $.fn.extend({
         jqote: function(data, t) {
-            var data = type_of.call(data) === ARR ? data : [data],
-                dom = '';
+            var dom = '';
 
             this.each(function(i) {
                 var fn = $.jqotec(this, t);
 
-                for ( var j=0; j < data.length; j++ )
-                    dom += fn.call(data[j], i, j, data, fn);
+                dom += fn.call(data, i, 0, data, fn);
             });
 
             return dom;
@@ -101,12 +99,8 @@
             if ( fn === false )
                 raise(new Error('Empty or undefined template passed to $.jqote'), {type: JQOTE2_TMPL_UNDEF_ERROR});
 
-            data = type_of.call(data) !== ARR ?
-                [data] : data;
-
             for ( var i=0,l=fn.length; i < l; i++ )
-                for ( var j=0; j < data.length; j++ )
-                    str += fn[i].call(data[j], i, j, data, fn[i]);
+                str += fn[i].call(data, i, 0, data, fn[i]);
 
             return str;
         },

@@ -49,18 +49,18 @@ bMoor.constructor.define({
 						$(document.body).on( action, className+' '+subselect, function( event ){
 							var
 								node = this,
-								controller,
-								observer;
+								controllerEl,
+								observerEl;
 
-							observer = snap.Core.prototype._findElementWithProperty( 'observer', this );
+							observerEl = snap.Core.prototype._findElementWithProperty( 'observer', this );
 							
-							if ( $(observer).hasClass(className) ){
-								controller = observer;
+							if ( $(observerEl).hasClass(className) ){
+								controllerEl = observerEl;
 							}else{
-								controller = $(this).closest( className )[0];
+								controllerEl = $(this).closest( className )[0];
 							}
 
-							return func.call( this, event, controller.controller, observer.observer );
+							return func.call( this, event, controllerEl.controller, observerEl.observer );
 						});
 					};
 

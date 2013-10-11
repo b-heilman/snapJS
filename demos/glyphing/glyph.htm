@@ -11,21 +11,10 @@
 	</style>
 	
 	<script src='../../external/jquery.min.js'></script>
-	<script src='../../external/bmoor.js' root='../../src'></script>
-	
-	<script src='../../src/snap/lib/Bootstrap.js'></script>
-	<script src='../../src/snap/glyphing/node/Glyph.js'></script>
-	<script src='../../src/snap/glyphing/node/Container.js'></script>
+	<script src='../../build/snap.min.js' root='../../src'></script>
 </head>
-<body>
-	<form snap-node="snap.glyphing.Controller">
-		<label>Top : <input name='top'/></label>
-		<label>Left : <input name='left'/></label>
-		<label>Width : <input name='width'/></label>
-		<label>Height : <input name='height'/></label>
-		<label>Opacity : <input name='opacity'/></label>
-		<label>Angle : <input name='angle'/></label>
-	</form>
+<body snap-controller="snap.glyphing.controller.General">
+	<form snap-node="snap.glyphing.node.Form" snap-observe='active'></form>
 	<div style="margin: 20px auto; width: 400px;">
 		<div id='container' snap-node="snap.glyphing.node.Container" style="border: 1px solid black; height: 200px;"></div>
 	</div>

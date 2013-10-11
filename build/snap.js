@@ -1,394 +1,5 @@
-/*! bmoor 2013-09-28 */
-!function(a,b,c){"use strict";function d(a){console&&console.log&&(console.log(a),console.trace())}function e(){}function f(){this.args=arguments}function g(){}var h=document.getElementsByTagName("script"),i=h[h.length-1],j={},k={templator:["bmoor","templating","JQote"],templatorTag:"#",jsRoot:i.hasAttribute("root")?i.getAttribute("root"):i.getAttribute("src").match(/^(.*)\/b[Mm]oor(\.min)?\.js/)[1]};String.prototype.trim||(String.prototype.trim=function(){return this.replace(/^\s+|\s+$/g,"")});var l={parse:function(a){return a?"string"==typeof a?a.split("."):a.length?a.slice(0):a:[]},get:function(a,c){var d,e,f=b;if(a&&("string"==typeof a||a.length)){a=this.parse(a),c&&(d=a.length-1,e=a[d],a[d]=e.charAt(0).toLowerCase()+e.slice(1));for(var g=0;g<a.length;g++){var h=a[g];f[h]||(f[h]={}),f=f[h]}}return f},exists:function(a,c){var d,e,f=b;if(a){if("string"==typeof a||a.length){a=this.parse(a),c&&(d=a.length-1,e=a[d],a[d]=e.charAt(0).toLowerCase()+e.slice(1));for(var g=0;g<a.length;g++){var h=a[g];if(!f[h])return null;f=f[h]}return f}return a}return null}},m={requests:0,onReady:[]};!function(){var a={},b={};m.parseResource=function(a){var b=a.match(/^(.*)\/(js|src)/);return b?b[1]:a.match(/^[js|src]/)?null:null},m.reset=function(){b={".":{fullName:!1},">":this.parseResource(k.jsRoot),"/":k.jsRoot,jquery:{"/":k.jsRoot+"/jquery",".":{fullName:!0}}}},m.reset(),m.setRoot=function(a){b["/"]=a,b[">"]=this.parseResource(a)},m.setLibrary=function(a,d,e,f){var g=b,h=l.parse(a);for(e||(e={});h.length;){var i=h.shift();g[i]===c&&(g[i]={}),g=g[i]}g["/"]=d,g["."]=e,g["*"]=f===!0,g[">"]=this.parseResource(d)},m.delLibrary=function(a){for(var c=b,d=null,e=null,f=l.parse(a);f.length&&c;){var g=f.shift();c[g]?(d=c,e=g,c=c[e]):c=null}c&&delete d[e]},m.getLibrary=function(a,c){for(var d=b,e=b,f=l.parse(a),g=c?null:f.pop(),h=f.slice(0);f.length;){var i=f[0];if(!d[i])break;d=d[f.shift()],d["/"]&&(e=d,h=f.slice(0))}return e["*"]?{root:e["/"],path:[],name:g,settings:e["."],resource:e[">"]}:{root:e["/"],path:h,name:g,settings:e["."],resource:e[">"]}},m.loadSpace=function(b,f,g,h,i){function j(){i===c&&(i={}),h===c&&(h=[]),g.apply(i,h)}function k(a){var c=l.exists(b);!c||c instanceof e||c.prototype&&c.prototype.__defining?setTimeout(k,10):g?(clearTimeout(a),j()):clearTimeout(a)}var m;if(b=l.parse(b),"function"==typeof f?(i=h,h=g,g=f,f=b):f||(f=b),m=l.exists(b))m instanceof e?k():j();else{var n=this.getLibrary(f),o=n.root+(n.path.length?"/"+n.path.join("/"):"")+"/"+(n.settings.fullName?f.join("."):n.name),p=function(c){var e,f,g,h=a[o];for(e=setTimeout(function(){l.exists(b)||d("loaded file : "+c+"\n but no class : "+b.join("."))},5e3),f=0,g=h.length;g>f;f++)h[f](e);a[o]=!0};a[o]?a[o].push(k):"boolean"==typeof a[o]?k():(a[o]=[k],bMoor.module.Resource.loadScriptSet(o+".js",o+".min.js",p))}},m.done=function(a){0===this.requests?a():this.onReady.push(a)},m.require=function(a,b,c){function d(){var a,c,d,e,f=[];if(m--,0===m){for(k.requests--,m--,c=0,a=p,d=a?a.length:0;d>c;c++)f.push(l.get(a[c]));if(b.apply({},f),0===k.requests){for(;k.onReady.length;)e=k.onReady.shift(),e();k.onReady=[]}}}var e,f,g,h,i,j,k=this,m=1,n=null,o=null,p=null;for(a.substring?(o=p=[a],n={}):a.length?(o=p=a,n={}):(n=a.references?a.references:{},o=a.classes?a.classes:[],p=a.aliases?a.aliases:[]),this.requests++,i=0,h=o,j=h?h.length:0;j>i;i++)f=l.parse(h[i]),m++,this.loadSpace(f,d);for(g in n)f=l.parse(g),m++,this.loadSpace(f,n[g],d);if(a.scripts&&(m++,bMoor.module.Resource.loadScript(a.scripts,d,c?c+"/js/":"js/")),a.styles)for(g in a.styles)m++,e=a.styles[g],"/"!=e.charAt(0)&&(e=c?c+"/css/"+e:"css/"+e),bMoor.module.Resource.loadStyle(e,d);if(a.templates)for(g in a.templates)m++,e=a.templates[g],"/"!=e.charAt(0)&&(e=c?c+"/template/"+e:"template/"+e),bMoor.module.Resource.loadScript(e,d);d()}}(),function(){function c(a,b,c){var d=typeof c,e=b[a];"function"==d?b[a]=function(){var a,b=this._wrapped;return this._wrapped=e,a=c.apply(this,arguments),this._wrapped=b,a}:"string"==d&&(b[a]+=" "+c)}function d(a,c,d){var e=c.parent?l.get(c.parent):null,f=c.namespace?l.parse(c.namespace):[],g=c.namespace?l.get(f):b;if(e&&(e.prototype.__name||(e.prototype.__name=c.parent),a.extend(d,e),e.prototype.__onDefine))if(c.onDefine){var h=c.onDefine;c.onDefine=function(a,b,c,d){e.prototype.__onDefine.call(this,a,b,c,d),h.call(this,a,b,c,d)}}else c.onDefine=e.prototype.__onDefine;d.prototype.__construct=c.construct?c.construct:e?e.prototype.__construct:function(){},d.prototype.__defining=!0,g[c.name]=d,f.push(c.name),d.prototype.__class=f.join("."),d.prototype.__name=f.pop(),c.onDefine&&(d.prototype.__onDefine=c.onDefine),c.aliases&&a.alias(d,c.aliases),a.statics(d,c.statics),c.properties&&a.properties(d,c.properties)}var h=[],i=!1,k=0;g.prototype.define=function(c){function g(){var e,f=l.exists(c.parent);if(f&&f.prototype.__defining)setTimeout(g,10);else if(d(j,c,q),c.onDefine&&(e=c.onDefine.apply(q.prototype,[c,p,c.name,q])),e||(e=p[c.name]),c.onReady&&a(document).ready(function(){m.done(function(){c.onReady(e)})}),delete q.prototype.__defining,k--,0===k)for(;h.length;){var i=h.pop();i(a,b)}}var j=this,n=c.require,o=m.getLibrary(c.namespace,!0).resource,p=l.get(l.parse(c.namespace)),q=function(){i||this.__construct.apply(this,arguments[0]instanceof f?arguments[0].args:arguments)};if(k++,!c.name)throw"Need name for class";p[c.name]=new e,n?n.length&&(n={classes:n}):n={},c.parent&&(n.classes?n.classes.push(c.parent):n.classes=[c.parent]),c.aliases&&(n.aliases=c.aliases),m.require(n,g,o)},g.prototype.singleton=function(a){var b=a.onDefine?a.onDefine:function(){};a.onDefine=function(a,c,d,e){var f,g=new e,h=d.charAt(0).toLowerCase()+d.slice(1);return c[h]=g,b.apply(this,[a,c,d,e,g]),a.module&&(f=a.module,f=f.charAt(0).toUpperCase()+f.slice(1).toLowerCase(),j[f]=g),g},this.define(a)},g.prototype.factory=function(a){var b=a.onDefine?a.onDefine:function(){};a.onDefine=function(a,c,d,e){var f={},g=function(){return Array.prototype.push.call(arguments,e),a.factory.apply(f,arguments)};c[d.charAt(0).toLowerCase()+d.slice(1)]=g,b.apply(this,arguments)},this.define(a)},g.prototype.decorator=function(a){var b,d;a.properties||(a.properties={}),b=a.properties._decorate,d=a.construct,delete a.properties._decorate,delete a.construct,a.properties._decorate=function(a,e){var f;d&&(e?c("__construct",a,function(){this._wrapped&&this._wrapped.apply(this,arguments),d.apply(this,arguments)}):d.apply(a));for(f in this)"__construct"!==f&&"_decorate"!==f&&(a[f]?c(f,a,this[f]):a[f]=this[f]);return b&&b.call(a),a},this.singleton(a)},g.prototype.mutate=function(a,b){var c,d,e=a.onDefine?a.onDefine:function(){};if(a.decorators){for(d="string"==typeof a.decorators?d.split(","):a.decorators,a.require?a.require.length&&(a.require={classes:a.require}):a.require={},a.require.classes||(a.require.classes=[]),c=0;c<d.length;c++)a.require.classes.push(d[c]);a.onDefine=function(a,b,c,f){var g,h,i;for(e.apply(this,[a,b,c,f]),g=0,i=d,h=i.length;h>g;g++)l.get(i[g],!0)._decorate(this,!0);for(g in a.noOverride)this[g]=a.noOverride[g]}}b?this.singleton(a):this.define(a)},g.prototype.properties=function(a,b){for(var c in b)a.prototype[c]=b[c]},g.prototype.statics=function(b,c){b.prototype.__static?(b.prototype.__static={},a.extend(b.prototype.__static,c)):b.prototype.__static=c?c:{}},g.prototype.alias=function(a,b){for(var c in b){var d=b[c];a.prototype["__"+d]=l.get(c).prototype}},g.prototype.extend=function(a,b){i=!0,a.prototype=new b,a.prototype.constructor=a,a.prototype[b.prototype.__class]=b.prototype,i=!1},g.prototype.loaded=function(c){k?h.push(c):c(a,b)}}(),b.bMoor={module:j,setTemplate:function(a,b){this.templates[a]=b},templates:{},require:function(){m.require.apply(m,arguments)},get:function(a,b){return l.exists(a,b)},settings:k,autoload:m,constructor:new g},function(){var b={};bMoor.constructor.singleton({name:"Resource",namespace:["bmoor","lib"],module:"Resource",onReady:function(a){var b,c=document.getElementsByTagName("script");bMoor.setTemplate=function(b,c){a.setTemplate(b,c)};for(b in bMoor.templates)a.setTemplate(b,bMoor.templates[b]);for(var d=0,e=c.length;e>d;d++){var f=c[d];f.id&&(f.src&&(a.__static.loadedScripts[f.src]=f.id),"text/html"==f.getAttribute("type")&&a.setTemplate(f.id,f.innerHTML))}},statics:{loadedScripts:{}},properties:{loadScriptSet:function(){var b=Array.prototype.slice.call(arguments,0),c=b.pop(),e=b.shift(),f=e,g=function(){a.getScript(e).done(c).fail(function(a,c,h){b.length?(e=b.shift(),g()):d("failed to load file : "+f+"\nError : "+h)})};g()},loadScript:function(b,c,e){var f,g=this;"string"==typeof b&&(b=[b]),f=(e||"")+b.shift(),a.getScript(f).done(function(){b.length?g.loadScript(b,c,e):c()}).fail(function(a,b,c){d("failed to load file : "+f+"\nError : "+c)})},loadStyle:function(b,c){var d,e,f,g=null;e=document.createElement("link"),e.setAttribute("href",b),e.setAttribute("rel","stylesheet"),e.setAttribute("type","text/css"),e.sheet?(f="sheet",d="cssRules",g=setInterval(function(){try{e[f]&&e[f][d]&&e[f][d].length&&(clearInterval(g),c())}catch(a){}},10)):a(e).bind("load",c),a("head").append(e)},loadImage:function(b,c){var d=new Image;"#"==b[0]&&(b=a(b)[0].src),d.onload=c,d.src=b},loadTemplate:function(d,e,f){var g,h=null,i=bMoor.templates;if(f===c&&"string"!=typeof e&&(f=e,e=null),"#"===d[0]&&(d=d.substring(1)),!i[d])if(b[e]){var j=loadedScript[e];i[j]?i[d]=i[j]:this.setTemplate(d,document.getElementById(j).innerHTML)}else if((g=document.getElementById(d))!==c)this.setTemplate(d,g.innerHTML);else{if(null===e)throw"loadTemplate : "+d+" requested, and not found, while src is null";h=this,a.ajax(e,{success:function(a){h.setTemplate(a),f(i[d])}})}if(null===h){if(!f)return i[d];f(i[d])}return null},setTemplate:function(a,b){var c=bMoor.templates;switch(typeof b){case"string":c[a]=b.replace(/\s*<!\[CDATA\[\s*|\s*\]\]>\s*|[\r\n\t]/g,"");break;case"function":c[a]=b.toString().split(/\n/).slice(1,-1).join("\n")}}}},!0)}()}(jQuery,this),function(){bMoor.constructor.singleton({name:"Bouncer",namespace:["bmoor","lib"],module:"Schedule",construct:function(){this._stack=[],this._done=[],this._pauseAfter=null,this._lock=!1},properties:{runPause:30,runWindow:300,_setTime:function(){this._pauseAfter=(new Date).getTime()+this.runWindow},add:function(a){this._stack.push(a)},done:function(a){this._done.push(a)},_run:function(){if(this._lock=!1,this._stack.length)this.run();else if(this._done.length){for(;this._done.length;)this.add(this._done.shift());this.run()}else this._pauseAfter=null},run:function(){var a,b=this;this._stack.length&&!this._lock?(this._lock=!0,a=this._stack.shift(),0===this.runWindow?(a(),this._run()):(null===this._pauseAfter&&this._setTime(),a(),(new Date).getTime()>this._pauseAfter?setTimeout(function(){b._pauseAfter=null,b._run()},this.runPause):this._run())):this._run()}}})}(jQuery,this),function(){bMoor.constructor.singleton({name:"MouseTracker",namespace:["bmoor","lib"],onReady:function(a){$(document.body).on("mousemove",function(b){a.x=b.pageX,a.y=b.pageY})}})}(this),function(){bMoor.constructor.singleton({name:"WaitFor",namespace:["bmoor","lib"],construct:function(){},require:{references:{"bMoor.module.Resource":["bmoor","lib","Resource"]}},module:"Wait",properties:{_waiting:0,_done:[],_return:function(){var a;for(this._waiting--;this._done.length&&this._waiting<1;)a=this._done.pop(),a()},done:function(a){this._waiting<1?a():this._done.unshift(a)},require:function(a,b){var c=this;return this._waiting++,bMoor.autoload.require(a,function(){b&&b(),c._return()}),this},loadScript:function(a,b){var c=this;return this._waiting++,bMoor.module.Resource.loadScript(a,function(){b&&b(),c._return()}),this},loadStyle:function(a,b){var c=this;return this.waiting++,bMoor.module.Resource.loadStyle(a,function(){b&&b(),c._return()}),this},loadImage:function(a,b){var c=this;return this._waiting++,bMoor.module.Resource.loadImage(a,function(){b&&b(),c._return()}),this},loadTemplate:function(a,b,c){var d=this;return this._waiting++,bMoor.module.Resource.loadTemplate(a,b,function(){c&&c(),d._return()}),this}}})}(jQuery,this);;;(function( $, global, undefined ){
-
-bMoor.constructor.define({
-	name : 'Core',
-	namespace : ['snap'],
-	require : {
-		classes : [ 
-			['snap','observer','Map'],
-			['snap','observer','Collection']
-		]
-	},
-	properties : {
-		getModel : function(){
-			if ( this.observer ){
-				return this.observer.model;
-			}else return null;
-		},
-		__warn : function( warning ){
-			this__log( 'warn', warning );
-		},
-		__error : function( error ){
-			this.__log( 'error', error );
-			throw error;
-		},
-		__log : function(){
-			Array.prototype.unshift.call( arguments, this.__class + ' -> ' );
-			console.log.apply( console, arguments );
-		},
-		_initElement : function( element ){
-			this.element = element;
-		},
-		_initModel : function(){
-			var observer = this._findObserver();
-
-			return  observer ? observer.model : global;
-		},
-		_observe : function( model ){
-			var observer = null;
-
-			if ( model ){
-				if ( model._ ){
-					observer = model._;
-				}else{
-					if ( model.length === undefined ){
-						observer = new snap.observer.Map( model );
-					}else{
-						observer = new snap.observer.Collection( model );
-					}
-				}
-			}
-
-			return observer;
-		},
-		_parseAttributes : function( attributes ){
-			this._attributes = attributes;
-		},
-		_unwrapVar : function( context, variable, smart ){
-			var 
-				scope,
-				value = context,
-				test = typeof(variable) == 'string' ? variable.split('.') : variable,
-				i,
-				c;
-
-			if ( smart ){
-				for( i = 0, c = test.length; i < c; i++ ){
-					if ( value[test[i]] !== undefined ){
-						scope = value;
-						variable = test[i];
-						value = value[ variable ];
-					}else return undefined;
-				}
-
-				return {
-					scope : scope,
-					value : value,
-					variable : variable
-				};
-			}else{
-				for( i = 0, c = test.length; i < c; i++ ){
-					if ( value[test[i]] !== undefined ){
-						value = value[ test[i] ];
-					}else return undefined;
-				}
-
-				return value;
-			}
-		},
-		_getAttribute : function( attribute, otherwise, adjustment ){
-			var attr;
-			
-			if ( this._attributes && this._attributes[attribute] ){
-				attr = this._attributes[attribute];
-			}else{
-				attribute = 'snap-'+attribute;
-				
-				if ( this.element.hasAttribute && this.element.hasAttribute(attribute) ){
-					attr = this.element.getAttribute( attribute );
-				}else return otherwise;
-			}
-			
-			return adjustment ? adjustment( attr ) : attr;
-		},
-		_findElementWithProperty : function( property, element ){
-			var node = element || this.element;
-
-			if ( node ){
-				if ( !node.hasAttribute ){
-					node = node[ 0 ];
-				}
-
-				while( node.tagName != 'HTML' ){
-					if ( node[property] ){ 
-						return node; 
-					}
-					node = node.parentNode;
-				}
-			}
-
-			return null;
-		},
-		_findProperty : function( property, element ){
-			var node = this._findElementWithProperty( property, element );
-
-			return node ? node[ property ] : null;
-		},
-		_findRoot : function( element ){
-			return this._findProperty( 'root', element );
-		},
-		_setRoot : function( controller ){
-			if ( !controller ){
-				controller = this.root;
-			}
-			
-			this.element.root = controller;
-		},
-		_findObserver : function( element ){
-			return this._findProperty( 'observer', element );
-		},
-		_pushObserver : function( element, observer ){
-			if ( !element ){
-				element = this.element;
-			}
-
-			if ( !observer ){
-				observer = this.observer;
-			}
-			
-			element.observer = observer;
-		},
-		_select : function( selector, element ){
-			if ( !element ){
-				element = this.element;
-			}
-
-			if ( element.querySelectorAll ){
-				return element.querySelectorAll( selector );
-			}else{
-				return $( element ).find( selector );
-			}
-		},
-		_decodeData : function( variable ) {
-			// TODO : prolly inline this
-			return this._unwrapVar( this.observer.model, variable );
-		},
-		// TODO : this should be renamed
-		_decode : function( variable ){
-			if ( typeof(variable) != 'string' ){
-				return variable;
-			}else if ( variable[0] == '{' || variable[0] == '[' ){
-				return eval( variable );
-			}else return eval( 'global.' + variable );
-		}
-	}
-});
-
-}( jQuery, this ));
-;;(function( $, global, undefined ){
-var installed = false;
-
-bMoor.constructor.singleton({
-	name : 'Bootstrap',
-	namespace : ['snap','lib'],
-	require : {
-		references : { 
-			'bMoor.module.Wait' : ['bmoor','lib','WaitFor'],
-			'bMoor.module.Schedule' : ['bmoor','lib','Bouncer']
-		}
-	},
-	module : 'Bootstrap',
-	onReady : function( self ){
-		if ( !installed ){
-			var builder = self;
-			
-			bMoor.constructor.loaded(function(){
-				installed = true;
-				
-				builder.check();
-			});
-		}
-	},
-	construct: function(){
-		this._render.push(function(){
-			document.body.className += ' snap-ready';
-		});
-	},
-	properties: {
-		_stopped : false,
-		_checking : false,
-		_booting : 0,
-		_render : [],
-		_preRender : null,
-		preRender : function( cb ){
-			this._preRender = cb;
-		},
-		done : function( cb ){
-			// I don't need to call right away, because it will get cycled and run anyway
-			if ( this._booting === 0 ){
-				cb();
-			}else{
-				this._render.push( cb );
-			}
-		},
-		stop : function(){
-			this._stopped = true;
-		},
-		start : function(){
-			this._stopped = false;
-			this.check();
-		},
-		check : function(){
-			if ( !this._stopped && !this._checking){
-				this._checking = true;
-				this.build( document.body );
-				this._checking = false;
-			}
-		},
-		_buildNode : function( waiting, element ){
-			// context -> model -> scope -> variable
-			var
-				create = element.getAttribute('snap-node'),
-				requirements = [],
-				visages = [];
-			
-			// up here, so the require loop doesn't become infinite
-			element.removeAttribute('snap-node');
-			
-			if ( element.hasAttribute('snap-visage') ){
-				visages = element.getAttribute('snap-visage').split(',');
-				requirements = visages.slice(0);
-			}
-
-			requirements.push( create );
-			 
-			return {
-				requirements : requirements,
-				build : function(){
-					var 
-						i,
-						node = bMoor.get( create ),
-						el = new node( element, {}, true );
-					
-					for( i = 0; i < visages.length; i++ ){
-						bMoor.get( visages[i], true )._decorate( el );
-					}
-					
-					el.init();
-				}
-			};
-		},
-		_buildController : function( waiting, element ){
-			var
-				create = element.getAttribute('snap-controller'),
-				args = [],
-				requirements = [],
-				stints = [],
-				pos;
-			
-			// up here, so the require loop doesn't become infinite
-			element.removeAttribute('snap-controller');
-			
-			if ( element.hasAttribute('snap-stint') ){
-				stints = element.getAttribute('snap-stint').split(',');
-				requirements = stints.slice(0);
-			}
-
-			pos = create.indexOf( '(' );
-			// TODO : this is pretty weak
-			if ( pos >= 0 ){
-				args = create.substring( pos + 1, create.length - 1 ).trim().split(',');
-				create = create.substring( 0, pos );
-			}
-
-			requirements.push( create );
-			
-			return {
-				requirements : requirements,
-				build : function(){
-					var 
-						i,
-						controller = bMoor.get( create ),
-						el = new controller( element, {}, args, true );
-
-					for( i = 0; i < stints.length; i++ ){
-						bMoor.get( stints[i], true )._decorate( el );
-					}
-
-					el.init();
-				}
-			};
-		},
-		build : function( element ){
-			var 
-				i,
-				c,
-				dis = this,
-				waiting = bMoor.module.Wait,
-				schedule = bMoor.module.Schedule,
-				res,
-				nodes,
-				builds = [],
-				requirements = [];
-			
-			// right now I just want DOM elements
-			if ( element.hasAttribute ){
-				this._booting++;
-				
-				if ( dis._preRender ){
-					dis._preRender();
-					dis._preRender = null;
-				}
-
-				if ( element.hasAttribute('snap-controller') ){
-					res = this._buildController( waiting, element );
-					requirements = requirements.concat( res.requirements );
-					builds.unshift( res.build );
-				}
-
-				for( nodes = this.select(element,'[snap-controller]'), i = 0, c = nodes.length; i < c; i++){
-					res = this._buildController( waiting, nodes[i] );
-					requirements = requirements.concat( res.requirements );
-					builds.unshift( res.build );
-				}
-
-				if ( element.hasAttribute('snap-node') ){
-					res = this._buildNode( waiting, element );
-					requirements = requirements.concat( res.requirements );
-					builds.unshift( res.build );
-				}
-
-
-				for( nodes = this.select(element,'[snap-node]'), i = 0, c = nodes.length; i < c; i++){
-					res = this._buildNode( waiting, nodes[i] );
-					requirements = requirements.concat( res.requirements );
-					builds.unshift( res.build );
-				}
-				
-				schedule.done(function(){
-					var op;
-
-					while( dis._render.length){
-						op = dis._render.shift();
-						op();
-					}
-
-					dis._booting--;
-				});
-
-				waiting.require( requirements );
-				waiting.done( function(){
-					while( builds.length ){
-						schedule.add( builds.pop() );
-					}
-					
-					schedule.run(); 
-				});
-			}
-		},
-		select : function( element, selector ){
-			if ( element.querySelectorAll ){
-				return element.querySelectorAll( selector );
-			}else{
-				return $(element).find( selector );
-			}
-		}
-	}
-});
-
-}( jQuery, this ));
-;;(function( global, undefined ){
+/*! bmoor 2013-10-10 */
+!function(a,b,c){"use strict";function d(a){console&&console.log&&(console.log(a),console.trace())}function e(){}function f(){this.args=arguments}function g(){}var h=document.getElementsByTagName("script"),i=h[h.length-1],j={},k={templator:["bmoor","templating","JQote"],templatorTag:"#",jsRoot:i.hasAttribute("root")?i.getAttribute("root"):i.getAttribute("src").match(/^(.*)\/b[Mm]oor(\.min)?\.js/)[1]};String.prototype.trim||(String.prototype.trim=function(){return this.replace(/^\s+|\s+$/g,"")});var l={parse:function(a){return a?"string"==typeof a?a.split("."):a.length?a.slice(0):a:[]},get:function(a,c){var d,e,f=b;if(a&&("string"==typeof a||a.length)){a=this.parse(a),c&&(d=a.length-1,e=a[d],a[d]=e.charAt(0).toLowerCase()+e.slice(1));for(var g=0;g<a.length;g++){var h=a[g];f[h]||(f[h]={}),f=f[h]}}return f},exists:function(a,c){var d,e,f=b;if(a){if("string"==typeof a||a.length){a=this.parse(a),c&&(d=a.length-1,e=a[d],a[d]=e.charAt(0).toLowerCase()+e.slice(1));for(var g=0;g<a.length;g++){var h=a[g];if(!f[h])return null;f=f[h]}return f}return a}return null}},m={requests:0,onReady:[]};!function(){var a={},b={};m.parseResource=function(a){var b=a.match(/^(.*)\/(js|src)/);return b?b[1]:a.match(/^[js|src]/)?null:null},m.reset=function(){b={".":{fullName:!1},">":this.parseResource(k.jsRoot),"/":k.jsRoot,jquery:{"/":k.jsRoot+"/jquery",".":{fullName:!0}}}},m.reset(),m.setRoot=function(a){b["/"]=a,b[">"]=this.parseResource(a)},m.setLibrary=function(a,d,e,f){var g=b,h=l.parse(a);for(e||(e={});h.length;){var i=h.shift();g[i]===c&&(g[i]={}),g=g[i]}g["/"]=d,g["."]=e,g["*"]=f===!0,g[">"]=this.parseResource(d)},m.delLibrary=function(a){for(var c=b,d=null,e=null,f=l.parse(a);f.length&&c;){var g=f.shift();c[g]?(d=c,e=g,c=c[e]):c=null}c&&delete d[e]},m.getLibrary=function(a,c){for(var d=b,e=b,f=l.parse(a),g=c?null:f.pop(),h=f.slice(0);f.length;){var i=f[0];if(!d[i])break;d=d[f.shift()],d["/"]&&(e=d,h=f.slice(0))}return e["*"]?{root:e["/"],path:[],name:g,settings:e["."],resource:e[">"]}:{root:e["/"],path:h,name:g,settings:e["."],resource:e[">"]}},m.loadSpace=function(b,f,g,h,i){function j(){i===c&&(i={}),h===c&&(h=[]),g.apply(i,h)}function k(a){var c=l.exists(b);!c||c instanceof e||c.prototype&&c.prototype.__defining?setTimeout(k,10):g?(clearTimeout(a),j()):clearTimeout(a)}var m;if(b=l.parse(b),"function"==typeof f?(i=h,h=g,g=f,f=b):f||(f=b),m=l.exists(b))m instanceof e?k():j();else{var n=this.getLibrary(f),o=n.root+(n.path.length?"/"+n.path.join("/"):"")+"/"+(n.settings.fullName?f.join("."):n.name),p=function(c){var e,f,g,h=a[o];for(e=setTimeout(function(){l.exists(b)||d("loaded file : "+c+"\n but no class : "+b.join("."))},5e3),f=0,g=h.length;g>f;f++)h[f](e);a[o]=!0};a[o]?a[o].push(k):"boolean"==typeof a[o]?k():(a[o]=[k],bMoor.module.Resource.loadScriptSet(o+".js",o+".min.js",p))}},m.done=function(a){0===this.requests?a():this.onReady.push(a)},m.require=function(a,b,c){function d(){var a,c,d,e,f=[];if(m--,0===m){for(k.requests--,m--,c=0,a=p,d=a?a.length:0;d>c;c++)f.push(l.get(a[c]));if(b.apply({},f),0===k.requests){for(;k.onReady.length;)e=k.onReady.shift(),e();k.onReady=[]}}}var e,f,g,h,i,j,k=this,m=1,n=null,o=null,p=null;for(a.substring?(o=p=[a],n={}):a.length?(o=p=a,n={}):(n=a.references?a.references:{},o=a.classes?a.classes:[],p=a.aliases?a.aliases:[]),this.requests++,i=0,h=o,j=h?h.length:0;j>i;i++)f=l.parse(h[i]),m++,this.loadSpace(f,d);for(g in n)f=l.parse(g),m++,this.loadSpace(f,n[g],d);if(a.scripts&&(m++,bMoor.module.Resource.loadScript(a.scripts,d,c?c+"/js/":"js/")),a.styles)for(g in a.styles)m++,e=a.styles[g],"/"!=e.charAt(0)&&(e=c?c+"/css/"+e:"css/"+e),bMoor.module.Resource.loadStyle(e,d);if(a.templates)for(g in a.templates)m++,e=a.templates[g],"/"!=e.charAt(0)&&(e=c?c+"/template/"+e:"template/"+e),bMoor.module.Resource.loadScript(e,d);d()}}(),function(){function c(a,b,c){var d=typeof c,e=b[a];"function"==d?b[a]=function(){var a,b=this._wrapped;return this._wrapped=e,a=c.apply(this,arguments),this._wrapped=b,a}:"string"==d&&(b[a]+=" "+c)}function d(a,c,d){var e=c.parent?l.get(c.parent):null,f=c.namespace?l.parse(c.namespace):[],g=c.namespace?l.get(f):b;if(e&&(e.prototype.__name||(e.prototype.__name=c.parent),a.extend(d,e),e.prototype.__onDefine))if(c.onDefine){var h=c.onDefine;c.onDefine=function(a,b,c,d){e.prototype.__onDefine.call(this,a,b,c,d),h.call(this,a,b,c,d)}}else c.onDefine=e.prototype.__onDefine;d.prototype.__construct=c.construct?c.construct:e?e.prototype.__construct:function(){},d.prototype.__defining=!0,g[c.name]=d,f.push(c.name),d.prototype.__class=f.join("."),d.prototype.__name=f.pop(),c.onDefine&&(d.prototype.__onDefine=c.onDefine),c.aliases&&a.alias(d,c.aliases),a.statics(d,c.statics),c.properties&&a.properties(d,c.properties)}var h=[],i=!1,k=0;g.prototype.define=function(c){function g(){var e,f=l.exists(c.parent);if(f&&f.prototype.__defining)setTimeout(g,10);else if(d(j,c,q),c.onDefine&&(e=c.onDefine.apply(q.prototype,[c,p,c.name,q])),e||(e=p[c.name]),c.onReady&&a(document).ready(function(){m.done(function(){c.onReady(e)})}),delete q.prototype.__defining,k--,0===k)for(;h.length;){var i=h.pop();i(a,b)}}var j=this,n=c.require,o=m.getLibrary(c.namespace,!0).resource,p=l.get(l.parse(c.namespace)),q=function(){i||this.__construct.apply(this,arguments[0]instanceof f?arguments[0].args:arguments)};if(k++,!c.name)throw"Need name for class";p[c.name]=new e,n?n.length&&(n={classes:n}):n={},c.parent&&(n.classes?n.classes.push(c.parent):n.classes=[c.parent]),c.aliases&&(n.aliases=c.aliases),m.require(n,g,o)},g.prototype.singleton=function(a){var b=a.onDefine?a.onDefine:function(){};a.onDefine=function(a,c,d,e){var f,g=new e,h=d.charAt(0).toLowerCase()+d.slice(1);return c[h]=g,b.apply(this,[a,c,d,e,g]),a.module&&(f=a.module,f=f.charAt(0).toUpperCase()+f.slice(1).toLowerCase(),j[f]=g),g},this.define(a)},g.prototype.factory=function(a){var b=a.onDefine?a.onDefine:function(){};a.onDefine=function(a,c,d,e){var f={},g=function(){return Array.prototype.push.call(arguments,e),a.factory.apply(f,arguments)};c[d.charAt(0).toLowerCase()+d.slice(1)]=g,b.apply(this,arguments)},this.define(a)},g.prototype.decorator=function(a){var b,d;a.properties||(a.properties={}),b=a.properties._decorate,d=a.construct,delete a.properties._decorate,delete a.construct,a.properties._decorate=function(a,e){var f;d&&(e?c("__construct",a,function(){this._wrapped&&this._wrapped.apply(this,arguments),d.apply(this,arguments)}):d.apply(a));for(f in this)"__construct"!==f&&"_decorate"!==f&&(a[f]?c(f,a,this[f]):a[f]=this[f]);return b&&b.call(a),a},this.singleton(a)},g.prototype.mutate=function(a,b){var c,d,e=a.onDefine?a.onDefine:function(){};if(a.decorators){for(d="string"==typeof a.decorators?d.split(","):a.decorators,a.require?a.require.length&&(a.require={classes:a.require}):a.require={},a.require.classes||(a.require.classes=[]),c=0;c<d.length;c++)a.require.classes.push(d[c]);a.onDefine=function(a,b,c,f){var g,h,i;for(e.apply(this,[a,b,c,f]),g=0,i=d,h=i.length;h>g;g++)l.get(i[g],!0)._decorate(this,!0);for(g in a.noOverride)this[g]=a.noOverride[g]}}b?this.singleton(a):this.define(a)},g.prototype.properties=function(a,b){for(var c in b)a.prototype[c]=b[c]},g.prototype.statics=function(b,c){b.prototype.__static?(b.prototype.__static={},a.extend(b.prototype.__static,c)):b.prototype.__static=c?c:{}},g.prototype.alias=function(a,b){for(var c in b){var d=b[c];a.prototype["__"+d]=l.get(c).prototype}},g.prototype.extend=function(a,b){i=!0,a.prototype=new b,a.prototype.constructor=a,a.prototype[b.prototype.__class]=b.prototype,i=!1},g.prototype.loaded=function(c){k?h.push(c):c(a,b)}}(),b.bMoor={module:j,setTemplate:function(a,b){this.templates[a]=b},templates:{},require:function(){m.require.apply(m,arguments)},get:function(a,b){return l.exists(a,b)},settings:k,autoload:m,constructor:new g},function(){var b={};bMoor.constructor.singleton({name:"Resource",namespace:["bmoor","lib"],module:"Resource",onReady:function(a){var b,c=document.getElementsByTagName("script");bMoor.setTemplate=function(b,c){a.setTemplate(b,c)};for(b in bMoor.templates)a.setTemplate(b,bMoor.templates[b]);for(var d=0,e=c.length;e>d;d++){var f=c[d];f.id&&(f.src&&(a.__static.loadedScripts[f.src]=f.id),"text/html"==f.getAttribute("type")&&a.setTemplate(f.id,f.innerHTML))}},statics:{loadedScripts:{}},properties:{loadScriptSet:function(){var b=Array.prototype.slice.call(arguments,0),c=b.pop(),e=b.shift(),f=e,g=function(){a.getScript(e).done(c).fail(function(a,c,h){b.length?(e=b.shift(),g()):d("failed to load file : "+f+"\nError : "+h)})};g()},loadScript:function(b,c,e){var f,g=this;"string"==typeof b&&(b=[b]),f=(e||"")+b.shift(),a.getScript(f).done(function(){b.length?g.loadScript(b,c,e):c()}).fail(function(a,b,c){d("failed to load file : "+f+"\nError : "+c)})},loadStyle:function(b,c){var d,e,f,g=null;e=document.createElement("link"),e.setAttribute("href",b),e.setAttribute("rel","stylesheet"),e.setAttribute("type","text/css"),e.sheet?(f="sheet",d="cssRules",g=setInterval(function(){try{e[f]&&e[f][d]&&e[f][d].length&&(clearInterval(g),c())}catch(a){}},10)):a(e).bind("load",c),a("head").append(e)},loadImage:function(b,c){var d=new Image;"#"==b[0]&&(b=a(b)[0].src),d.onload=c,d.src=b},loadTemplate:function(d,e,f){var g,h=null,i=bMoor.templates;if(f===c&&"string"!=typeof e&&(f=e,e=null),"#"===d[0]&&(d=d.substring(1)),!i[d])if(b[e]){var j=loadedScript[e];i[j]?i[d]=i[j]:this.setTemplate(d,document.getElementById(j).innerHTML)}else if(null!==(g=document.getElementById(d)))this.setTemplate(d,g.innerHTML);else{if(null===e)throw"loadTemplate : "+d+" requested, and not found, while src is null";h=this,a.ajax(e,{success:function(a){h.setTemplate(a),f(i[d])}})}if(null===h){if(!f)return i[d];f(i[d])}return null},setTemplate:function(a,b){var c=bMoor.templates;switch(typeof b){case"string":c[a]=b.replace(/\s*<!\[CDATA\[\s*|\s*\]\]>\s*|[\r\n\t]/g,"");break;case"function":c[a]=b.toString().split(/\n/).slice(1,-1).join("\n")}}}},!0)}()}(jQuery,this),function(){bMoor.constructor.singleton({name:"Bouncer",namespace:["bmoor","lib"],module:"Schedule",construct:function(){this._stack=[],this._done=[],this._pauseAfter=null,this._lock=!1},properties:{runPause:30,runWindow:300,_setTime:function(){this._pauseAfter=(new Date).getTime()+this.runWindow},add:function(a){this._stack.push(a)},done:function(a){this._done.push(a)},_run:function(){if(this._lock=!1,this._stack.length)this.run();else if(this._done.length){for(;this._done.length;)this.add(this._done.shift());this.run()}else this._pauseAfter=null},run:function(){var a,b=this;this._stack.length&&!this._lock?(this._lock=!0,a=this._stack.shift(),0===this.runWindow?(a(),this._run()):(null===this._pauseAfter&&this._setTime(),a(),(new Date).getTime()>this._pauseAfter?setTimeout(function(){b._pauseAfter=null,b._run()},this.runPause):this._run())):this._run()}}})}(jQuery,this),function(){bMoor.constructor.singleton({name:"KeyboardTracker",namespace:["bmoor","lib"],onReady:function(a){$(document.body).on("keydown",function(b){a.activeKeys[b.which]=!0}),$(document.body).on("keyup",function(b){delete a.activeKeys[b.which]})},properties:{activeKeys:{},isDown:function(a){return this.activeKeys[a]}}})}(this),function(){bMoor.constructor.singleton({name:"MouseTracker",namespace:["bmoor","lib"],onReady:function(a){$(document.body).on("mousemove",function(b){a.x=b.pageX,a.y=b.pageY})}})}(this),function(){bMoor.constructor.singleton({name:"WaitFor",namespace:["bmoor","lib"],construct:function(){},require:{references:{"bMoor.module.Resource":["bmoor","lib","Resource"]}},module:"Wait",properties:{_waiting:0,_done:[],_return:function(){var a;for(this._waiting--;this._done.length&&this._waiting<1;)a=this._done.pop(),a()},done:function(a){this._waiting<1?a():this._done.unshift(a)},require:function(a,b){var c=this;return this._waiting++,bMoor.autoload.require(a,function(){b&&b(),c._return()}),this},loadScript:function(a,b){var c=this;return this._waiting++,bMoor.module.Resource.loadScript(a,function(){b&&b(),c._return()}),this},loadStyle:function(a,b){var c=this;return this.waiting++,bMoor.module.Resource.loadStyle(a,function(){b&&b(),c._return()}),this},loadImage:function(a,b){var c=this;return this._waiting++,bMoor.module.Resource.loadImage(a,function(){b&&b(),c._return()}),this},loadTemplate:function(a,b,c){var d=this;return this._waiting++,bMoor.module.Resource.loadTemplate(a,b,function(){c&&c(),d._return()}),this}}})}(jQuery,this);;;(function( global, undefined ){
 	var snapid = 0;
 
 	bMoor.constructor.define({
@@ -699,6 +310,542 @@ bMoor.constructor.singleton({
 ;;(function( $, global, undefined ){
 
 bMoor.constructor.define({
+	name : 'Core',
+	namespace : ['snap'],
+	require : {
+		classes : [ 
+			['snap','observer','Map'],
+			['snap','observer','Collection']
+		]
+	},
+	properties : {
+		getModel : function(){
+			if ( this.observer ){
+				return this.observer.model;
+			}else return null;
+		},
+		__warn : function( warning ){
+			this__log( 'warn', warning );
+		},
+		__error : function( error ){
+			this.__log( 'error', error );
+			throw error;
+		},
+		__log : function(){
+			Array.prototype.unshift.call( arguments, this.__class + ' -> ' );
+			console.log.apply( console, arguments );
+		},
+		_initElement : function( element ){
+			this.element = element;
+		},
+		_initModel : function(){
+			var observer = this._findObserver();
+
+			return  observer ? observer.model : global;
+		},
+		_observe : function( model ){
+			var observer = null;
+
+			if ( model ){
+				if ( model._ ){
+					observer = model._;
+				}else{
+					if ( model.length === undefined ){
+						observer = new snap.observer.Map( model );
+					}else{
+						observer = new snap.observer.Collection( model );
+					}
+				}
+			}
+
+			return observer;
+		},
+		_parseAttributes : function( attributes ){
+			this._attributes = attributes;
+		},
+		_unwrapVar : function( context, variable, smart ){
+			var 
+				scope,
+				value = context,
+				test = typeof(variable) == 'string' ? variable.split('.') : variable,
+				i,
+				c;
+
+			if ( smart ){
+				for( i = 0, c = test.length; i < c; i++ ){
+					if ( value[test[i]] !== undefined ){
+						scope = value;
+						variable = test[i];
+						value = value[ variable ];
+					}else return undefined;
+				}
+
+				return {
+					scope : scope,
+					value : value,
+					variable : variable
+				};
+			}else{
+				for( i = 0, c = test.length; i < c; i++ ){
+					if ( value[test[i]] !== undefined ){
+						value = value[ test[i] ];
+					}else return undefined;
+				}
+
+				return value;
+			}
+		},
+		_getAttribute : function( attribute, otherwise, adjustment ){
+			var attr;
+			
+			if ( this._attributes && this._attributes[attribute] ){
+				attr = this._attributes[attribute];
+			}else{
+				attribute = 'snap-'+attribute;
+				
+				if ( this.element.hasAttribute && this.element.hasAttribute(attribute) ){
+					attr = this.element.getAttribute( attribute );
+				}else return otherwise;
+			}
+			
+			return adjustment ? adjustment( attr ) : attr;
+		},
+		_findElementWithProperty : function( property, element ){
+			var el = element || this.element;
+
+			if ( el ){
+				if ( !el.hasAttribute ){
+					el = el[ 0 ];
+				}
+
+				while( el.tagName != 'HTML' ){
+					if ( el[property] ){ 
+						return el; 
+					}
+					el = el.parentNode;
+				}
+			}
+
+			return null;
+		},
+		_findProperty : function( property, element ){
+			var node = this._findElementWithProperty( property, element );
+
+			return node ? node[ property ] : null;
+		},
+		_findRoot : function( element ){
+			return this._findProperty( 'root', element );
+		},
+		_setRoot : function( controller ){
+			if ( !controller ){
+				controller = this.root;
+			}
+			
+			this.element.root = controller;
+		},
+		_findObserver : function( element ){
+			return this._findProperty( 'observer', element );
+		},
+		_pushObserver : function( element, observer ){
+			if ( !element ){
+				element = this.element;
+			}
+
+			if ( !observer ){
+				observer = this.observer;
+			}
+			
+			element.observer = observer;
+		},
+		_closestNode : function( constructor ){
+			var
+				element = this.element.parentNode,
+				node;
+
+			while( element && node === undefined ){
+				if ( element.node && element.node instanceof constructor ){
+					node = element.node;
+				}
+
+				element = element.parentNode;
+			}
+
+			return node;
+		},
+		_select : function( selector, element ){
+			if ( !element ){
+				element = this.element;
+			}
+			
+			if ( element.querySelectorAll ){
+				return element.querySelectorAll( selector );
+			}else{
+				return $( element ).find( selector );
+			}
+		},
+		_decodeData : function( variable ) {
+			// TODO : prolly inline this
+			return this._unwrapVar( this.observer.model, variable );
+		},
+		// TODO : this should be renamed
+		_decode : function( variable ){
+			if ( typeof(variable) != 'string' ){
+				return variable;
+			}else if ( variable[0] == '{' || variable[0] == '[' ){
+				return eval( variable );
+			}else return eval( 'global.' + variable );
+		}
+	}
+});
+
+}( jQuery, this ));
+;;(function( $, global, undefined ){
+var installed = false;
+
+bMoor.constructor.singleton({
+	name : 'Bootstrap',
+	namespace : ['snap','lib'],
+	require : {
+		references : { 
+			'bMoor.module.Wait' : ['bmoor','lib','WaitFor'],
+			'bMoor.module.Schedule' : ['bmoor','lib','Bouncer']
+		}
+	},
+	module : 'Bootstrap',
+	onReady : function( self ){
+		if ( !installed ){
+			var builder = self;
+			
+			bMoor.constructor.loaded(function(){
+				installed = true;
+				
+				builder.check();
+			});
+		}
+	},
+	construct: function(){
+		this._render.push(function(){
+			document.body.className += ' snap-ready';
+		});
+	},
+	properties: {
+		_stopped : false,
+		_checking : false,
+		_booting : 0,
+		_render : [],
+		_preRender : null,
+		preRender : function( cb ){
+			this._preRender = cb;
+		},
+		done : function( id, cb ){
+			if ( cb === undefined ){
+				cb = id;
+
+				// I don't need to call right away, because it will get cycled and run anyway
+				if ( this._booting === 0 ){
+					cb();
+				}else{
+					this._render.push( cb );
+				}
+			}else{
+				if ( this._render[id] === undefined ){
+					this._render[id] = [];
+				}
+
+				this._render[id].push( cb );
+			}
+		},
+		stop : function(){
+			this._stopped = true;
+		},
+		start : function(){
+			this._stopped = false;
+			this.check();
+		},
+		check : function(){
+			if ( !this._stopped && !this._checking){
+				this._checking = true;
+				this.build( document.body );
+				this._checking = false;
+			}
+		},
+		_buildNode : function( waiting, element ){
+			// context -> model -> scope -> variable
+			var
+				dis = this,
+				create = element.getAttribute('snap-node'),
+				requirements = [],
+				visages = [];
+			
+			// up here, so the require loop doesn't become infinite
+			element.removeAttribute('snap-node');
+			
+			if ( element.hasAttribute('snap-visage') ){
+				visages = element.getAttribute('snap-visage').split(',');
+				requirements = visages.slice(0);
+			}
+
+			requirements.push( create );
+			 
+			return {
+				requirements : requirements,
+				build : function(){
+					var 
+						i,
+						renders,
+						node = bMoor.get( create ),
+						el = new node( element, {}, true );
+					
+					for( i = 0; i < visages.length; i++ ){
+						bMoor.get( visages[i], true )._decorate( el );
+					}
+					
+					el.init();
+					
+					if ( element.id && dis._render[ element.id ]){
+						renders = dis._render[ element.id ];
+
+						for( i = 0; i < renders.length; i++ ){
+							renders[i]( el );
+						}
+
+						delete dis._render[ element.id ];
+					}
+				}
+			};
+		},
+		_buildController : function( waiting, element ){
+			var
+				create = element.getAttribute('snap-controller'),
+				args = [],
+				requirements = [],
+				stints = [],
+				pos;
+			
+			// up here, so the require loop doesn't become infinite
+			element.removeAttribute('snap-controller');
+			
+			if ( element.hasAttribute('snap-stint') ){
+				stints = element.getAttribute('snap-stint').split(',');
+				requirements = stints.slice(0);
+			}
+
+			pos = create.indexOf( '(' );
+			// TODO : this is pretty weak
+			if ( pos >= 0 ){
+				args = create.substring( pos + 1, create.length - 1 ).trim().split(',');
+				create = create.substring( 0, pos );
+			}
+
+			requirements.push( create );
+			
+			return {
+				requirements : requirements,
+				build : function(){
+					var 
+						i,
+						controller = bMoor.get( create ),
+						el = new controller( element, {}, args, true );
+
+					for( i = 0; i < stints.length; i++ ){
+						bMoor.get( stints[i], true )._decorate( el );
+					}
+
+					el.init();
+				}
+			};
+		},
+		build : function( element ){
+			var 
+				i,
+				c,
+				dis = this,
+				waiting = bMoor.module.Wait,
+				schedule = bMoor.module.Schedule,
+				res,
+				nodes,
+				builds = [],
+				requirements = [];
+			
+			// right now I just want DOM elements
+			if ( element.hasAttribute ){
+				this._booting++;
+				
+				if ( dis._preRender ){
+					dis._preRender();
+					dis._preRender = null;
+				}
+
+				if ( element.hasAttribute('snap-controller') ){
+					res = this._buildController( waiting, element );
+					requirements = requirements.concat( res.requirements );
+					builds.unshift( res.build );
+				}
+
+				for( nodes = this.select(element,'[snap-controller]'), i = 0, c = nodes.length; i < c; i++){
+					res = this._buildController( waiting, nodes[i] );
+					requirements = requirements.concat( res.requirements );
+					builds.unshift( res.build );
+				}
+
+				if ( element.hasAttribute('snap-node') ){
+					res = this._buildNode( waiting, element );
+					requirements = requirements.concat( res.requirements );
+					builds.unshift( res.build );
+				}
+
+
+				for( nodes = this.select(element,'[snap-node]'), i = 0, c = nodes.length; i < c; i++){
+					res = this._buildNode( waiting, nodes[i] );
+					requirements = requirements.concat( res.requirements );
+					builds.unshift( res.build );
+				}
+				
+				schedule.done(function(){
+					var op;
+
+					while( dis._render.length){
+						op = dis._render.shift();
+						op();
+					}
+
+					dis._booting--;
+				});
+
+				waiting.require( requirements );
+				waiting.done( function(){
+					while( builds.length ){
+						schedule.add( builds.pop() );
+					}
+					
+					schedule.run(); 
+				});
+			}
+		},
+		select : function( element, selector ){
+			if ( element.querySelectorAll ){
+				return element.querySelectorAll( selector );
+			}else{
+				return $(element).find( selector );
+			}
+		}
+	}
+});
+
+}( jQuery, this ));
+;;(function( global, undefined ){
+	bMoor.constructor.factory({
+		name : 'Stream',
+		namespace : ['snap','lib'],
+		require : {
+			classes : [ 
+				['snap','observer','Map'],
+			]
+		},
+		factory : function( stream, defintion ){
+			if ( !this[stream] ){
+				this[stream] = new defintion();
+			}
+
+			return this[stream];
+		},
+		construct : function(){
+			this._listeners = [];
+			this._data = {};
+		},
+		properties : {
+			// map : my var -> stream var, or a function
+			// reverse : stream var -> my var, or a function
+			bind : function( observer, map, reverse ){
+				var 
+					key,
+					dis = this;
+
+				// registers anything going from the observer into the stream
+				if ( map ){
+					if ( typeof(map) == 'function' ){
+						// this is impossible, they really meant reverse
+						reverse = map;
+					}else{
+						// flip the map inside out
+						if ( !reverse ){
+							reverse = {};
+							for( key in map ){
+								reverse[ map[key] ] = key;
+							}
+						}
+
+						observer.bind(function( alterations ){
+							var key;
+
+							for( key in alterations ) if ( alterations.hasOwnProperty(key) ){
+								if ( map[key] ) {
+									dis.push( map[key], this.model[key] );
+								}
+							}
+						});
+					}
+				}else{
+					observer.bind(function( alterations ){
+						var key;
+
+						for( key in alterations ) if ( alterations.hasOwnProperty(key) ){
+							dis.push( key, this.model[key] );
+						}
+					});
+				}
+				
+				// registers anything going from the stream into the observer
+				if ( reverse ){
+					if ( typeof(reverse) == 'function' ){
+						this._listeners.push( reverse );
+					}else{
+						this._listeners.push(function( key, val ){
+							var field = reverse[ key ];
+							
+							if ( field ) {
+								observer.model[ field ] = val;
+							}
+						});
+					}
+				}else{
+					this._listeners.push(function( key, val ){
+						observer.model[key] = val;
+					});
+				}
+			},
+			pull : function(){
+				var 
+					t = {},
+					key;
+
+				for( key in this._data ){
+					t[ key ] = this._data[ key ];
+				}
+
+				return t;
+			},
+			push : function( key, val ){
+				var list, i, c;
+
+				// snap shot of the current state
+				this._data[ key ] = val;
+
+				if ( arguments.length == 2 ){
+					for( i = 0, list = this._listeners, c = list.length; i < c; i++ ){
+						list[i]( key, val );
+					}
+				}else{
+					for( i in key ){
+						this.push( i, key[i] );
+					}
+				}
+			}
+		}
+	});
+}( this ));;;(function( $, global, undefined ){
+
+bMoor.constructor.define({
 	name : 'Abstract',
 	namespace : ['snap','service'],
 	construct : function(){
@@ -878,14 +1025,12 @@ bMoor.constructor.decorator({
 
     $.fn.extend({
         jqote: function(data, t) {
-            var data = type_of.call(data) === ARR ? data : [data],
-                dom = '';
+            var dom = '';
 
             this.each(function(i) {
                 var fn = $.jqotec(this, t);
 
-                for ( var j=0; j < data.length; j++ )
-                    dom += fn.call(data[j], i, j, data, fn);
+                dom += fn.call(data, i, 0, data, fn);
             });
 
             return dom;
@@ -920,12 +1065,8 @@ bMoor.constructor.decorator({
             if ( fn === false )
                 raise(new Error('Empty or undefined template passed to $.jqote'), {type: JQOTE2_TMPL_UNDEF_ERROR});
 
-            data = type_of.call(data) !== ARR ?
-                [data] : data;
-
             for ( var i=0,l=fn.length; i < l; i++ )
-                for ( var j=0; j < data.length; j++ )
-                    str += fn[i].call(data[j], i, j, data, fn[i]);
+                str += fn[i].call(data, i, 0, data, fn[i]);
 
             return str;
         },
@@ -1147,16 +1288,23 @@ bMoor.constructor.define({
 		init : function( element ){
 			this.classBindings = [];
 			this.makeClass = null;
+			this.observing = false;
 
 			if ( !element ){
 				element = this.element;
 			}
 			this.nodeId = nodesCount++;
 			
-			this._initElement( element );
-			
+			this.$ = this._initElement( element );
+
+			if ( !this.$ ){
+				throw this.__class+' forgot to return a jQuery object';
+			}
+
+			this.$.data( 'node', this ); // TODO : kinda wanna get ride of this?
+			element.node = this;
+
 			this.observer = this._observe( this._initModel() );
-			this._pushObserver( this.element, this.observer );
 			
 			this._bind();
 
@@ -1168,18 +1316,19 @@ bMoor.constructor.define({
 				controller,
 				attr;
 
-			this.$ = $( element );
-			this.$.data( 'node', this ); // TODO : kinda wanna get ride of this?
-
 			this['snap.Core']._initElement.call( this, element );
-
-			element.node = this;
 
 			// install a default controller
 			// TODO : a better way to do this?
 			if ( !element.controller && this.defaultController ){
 				controller = bMoor.get( this.defaultController );
-				new controller( element );
+
+				if ( !controller ){
+					throw 'defaultController could not be found for node ('
+						+ this.__class + ') : ' + this.defaultController;
+				}else{
+					new controller( element );
+				}
 			}
 			
 			attr = this._getAttribute( 'class' );
@@ -1204,6 +1353,8 @@ bMoor.constructor.define({
 			}else{
 				element.className = this.baseClass + ' ' + element.className;
 			}
+
+			return $( element );
 		},
 		_initModel : function(){
 			var 
@@ -1212,40 +1363,43 @@ bMoor.constructor.define({
 				scope,
 				model = this['snap.Core']._initModel.call( this );
 			
-			attr = this._getAttribute( 'observe' );
-			if ( attr ){
-				scope = attr.split('.');
-				info = this._unwrapVar( model, scope, true );
-
-				if ( info.value instanceof snap.observer.Map ){
-					model = info.value.model;
-				}else if ( typeof(info.value) == 'object' ){
-					model = info.scope;
-					this.variable = info.variable;
-					new snap.observer.Map( info.value );
-				}else{
-					throw 'Trying to observe, but no observer.Map found';
-				}
-			}else{
-				attr = this._getAttribute( 'scope', this.element.name );
-				
+			//if ( !this.element.controller ){
+				attr = this._getAttribute( 'observe' );
 				if ( attr ){
 					scope = attr.split('.');
 					info = this._unwrapVar( model, scope, true );
 
-					if ( !info ){
-						// TODO : what do I do?
+					if ( info.value instanceof snap.observer.Map ){
+						model = info.value.model;
 					}else if ( typeof(info.value) == 'object' ){
-						// if scope is a model, make it he model we watch
-						this.variable = null;
-						model = info.value;
-					}else{
-						this.variable = info.variable;
 						model = info.scope;
+						this.variable = info.variable;
+					}else{
+						throw 'Trying to observe, but no observer.Map found';
+					}
+
+					this.observing = true;
+				}else{
+					attr = this._getAttribute( 'scope', this.element.name );
+					
+					if ( attr ){
+						scope = attr.split('.');
+						info = this._unwrapVar( model, scope, true );
+
+						if ( !info ){
+							// TODO : what do I do?
+						}else if ( typeof(info.value) == 'object' ){
+							// if scope is a model, make it he model we watch
+							this.variable = null;
+							model = info.value;
+						}else{
+							this.variable = info.variable;
+							model = info.scope;
+						}
 					}
 				}
-			}
-
+			//}
+			
 			return model;
 		},
 		_bind : function(){
@@ -1258,11 +1412,14 @@ bMoor.constructor.define({
 					dis._prepContent( this.model, alterations );
 				}
 
+				dis._onAlteration( this.model, alterations );
+
 				if ( dis.makeClass && dis._needClassUpdate(alterations) ){
 					dis._updateClass( this.model );
 				}
 			});
 		},
+		_onAlteration : function( model, alterations ){},
 		_makeBindings : function(){
 			var attr = this._getAttribute('binding');
 
@@ -1329,12 +1486,15 @@ bMoor.constructor.define({
 			if ( this.variable ){
 				value = data[this.variable];
 
-				if ( typeof(data) == 'function' ){ 
+				if ( typeof(value) == 'function' ){ 
 					value = data[this.variable](); 
 				}
 			}else{
 				value = data;
 			}
+
+			// set up the observer for any children created
+			this._pushObserver( this.element, this.observing ? this._observe(value) : this.observer );
 
 			if ( this._makeContent( value, alterations ) ){
 				bMoor.module.Bootstrap.done(function(){
@@ -1343,9 +1503,7 @@ bMoor.constructor.define({
 			}
 		},
 		// TODO : change to _updateContent
-		_makeContent : function( data, alterations ){ 
-			return true;
-		},
+		_makeContent : function( data, alterations ){ return true; },
 		_finalizeContent : function(){},
 		_finalize : function(){}
 	}
@@ -1550,11 +1708,13 @@ bMoor.constructor.define({
 	},
 	properties: {
 		_initElement : function( element ){
-			this['snap.node.View']._initElement.call( this, element );
+			var $el = this['snap.node.View']._initElement.call( this, element );
 			
-			this.isTable = ( this.element.tagName == 'TABLE' );
-			
+			this.rows = {};
+			this.isTable = ( element.tagName == 'TABLE' );
 			this.mountPoint = null;
+
+			return $el;
 		},
 		_makeTemplate : function(){
 			var 
@@ -1601,6 +1761,7 @@ bMoor.constructor.define({
 			var
 				i,
 				c,
+				r,
 				row,
 				rows,
 				moves,
@@ -1613,18 +1774,20 @@ bMoor.constructor.define({
 				if ( removals ){
 					for( i in removals ){
 						row = removals[ i ];
-						
+						// row is a Map here
 						if ( typeof(row) == 'object' ){
 							// this means it was removed, otherwise it would be a number
-							rows = row._.rows; // reference the row element
+							rows = this.rows[row._.snapid]; // reference the row by snap id
 
 							for( i = 0, c = rows.length; i < c; i++ ){
-								row = rows[i];
+								r = rows[i];
 								
-								if ( row.parentNode ){
-									row.parentNode.removeChild( row );
+								if ( r.parentNode ){
+									r.parentNode.removeChild( r );
 								}
 							}
+
+							delete this.rows[row._.snapid];
 						}
 					}
 				}
@@ -1701,34 +1864,37 @@ bMoor.constructor.define({
 				nodes,
 				node,
 				next,
-				observer = model._,
+				rowContent,
 				els,
-				element;
+				element,
+				observer = model._;
 
 			// TODO : rows -> nodes
-			if ( previous && previous._.rows ){
-				previous = previous._.rows[ previous._.rows.length - 1 ];
+			if ( previous && (rowContent = this.rows[previous._.snapid]) ){
+				previous = rowContent[ rowContent.length - 1 ];
 			}else{
 				previous = this.mountPoint.above;
 			}
 
-			if ( !observer.rows ){
+			rowContent = this.rows[ model._.snapid ];
+
+			if ( !rowContent ){
 				els = this._makeChildren( model, template );
 
-				observer.rows = [];
+				rowContent = this.rows[ model._.snapid ] = [];
 
 				element = els.firstChild;
 
 				while( element ){
 					this._pushObserver( element, observer );
-					observer.rows.push( element );
+					rowContent.push( element );
 					
 					element = element.nextSibling;
 				}
 			}
-			
-			for( i = 0, nodes = observer.rows, c = nodes.length; i < c; i++ ){
-				element = nodes[i];
+
+			for( i = 0, c = rowContent.length; i < c; i++ ){
+				element = rowContent[i];
 
 				this._insert( element, previous );
 				this._finalizeElement( element );
@@ -1764,71 +1930,6 @@ bMoor.constructor.define({
 }( jQuery, this ));
 ;;(function( $, global, undefined ){
 
-bMoor.constructor.decorator({
-	name : 'Form',
-	namespace : ['snap','node'],
-	require: [
-		['snap','node','input','Text'],
-		['snap','node','input','Checked'],
-		['snap','node','input','Button'],
-		['snap','node','input','Select']
-	],
-	node : {
-		className : 'node-form'
-	},
-	properties : {
-		_finalize : function(){
-			var 
-				dis = this,
-				element = this.element,
-				names = {},
-				fields = [];
-			
-			this._wrapped();
-			
-			elements = element.elements;
-			for( var i = 0, c = elements.length; i < c; i++ ){
-				names[ elements[i].name ] = true;
-			}
-			
-			for ( var name in names ) {
-				var 
-					el,
-					input,
-					field = elements[ name ];
-				
-				if ( name[name.length - 1] == ']' ){
-					name = name.substring( 0, name.length - 2 );
-				}
-				
-				fields.push( name );
-				
-				if ( field instanceof NodeList ){
-					el = field[0];
-				}else{
-					el = field;
-				}
-
-				if ( el.nodeName == 'BUTTON' ){
-					input = new snap.node.input.Button( field );
-				}else if ( el.nodeName == 'SELECT' ){
-					input = new snap.node.input.Select( field );
-				}else{
-					if ( el.type == 'checkbox' || el.type == 'radio' ){
-						input = new snap.node.input.Checked( field );
-					}else if (el.type == 'button' ){
-						input = new snap.node.input.Button( field );
-					}else{
-						input = new snap.node.input.Text( field );
-					}
-				}
-			}
-		}
-	}
-});
-
-}( jQuery, this ));;;(function( $, global, undefined ){
-
 bMoor.constructor.define({
 	name : 'Basic',
 	namespace : ['snap','node','input'],
@@ -1844,9 +1945,9 @@ bMoor.constructor.define({
 			this.val( data );
 		},
 		_initElement : function( element ){
-			this['snap.node.Basic']._initElement.call( this, element );
-
-			this.root = this._findRoot();
+			this.root = this._findRoot( element );
+			
+			return this['snap.node.Basic']._initElement.call( this, element );
 		},
 		_initModel : function(){
 			var model = this['snap.node.Basic']._initModel.call( this );
@@ -1856,7 +1957,7 @@ bMoor.constructor.define({
 			}else if ( this.variable && !this.element.name ){
 				this.element.setAttribute( 'name', this.variable );
 			}
-
+			
 			return model;
 		},
 		_bind : function(){
@@ -1950,6 +2051,10 @@ bMoor.constructor.define({
 			this.element.setAttribute( 'value', this.val() );
 		},
 		val : function( value ){
+			if ( value === undefined ){
+				value = '';
+			}
+
 			if ( arguments.length ){
 				this.element.value = value;
 			}else{
@@ -1971,8 +2076,6 @@ bMoor.constructor.define({
 				name = element.nodeName ? element.name : element[0].name,
 				e,
 				i;
-
-			this['snap.node.Basic']._initElement.call( this, element );
 
 			this.checked = [];
 			this.map = {};
@@ -1999,6 +2102,8 @@ bMoor.constructor.define({
 					}
 				}
 			}
+
+			return this['snap.node.Basic']._initElement.call( this, element );
 		},
 		_initModel : function( context ){
 			var 
@@ -2055,7 +2160,7 @@ bMoor.constructor.define({
 						for( i = 0; i < value.length; i++ ){
 							el = this.map[ value[i] ];
 							if ( el ){
-								this.checked.push( e );
+								this.checked.push( el );
 								el.checked = true;
 							}
 						}
@@ -2229,15 +2334,14 @@ bMoor.constructor.define({
 	namespace : ['snap','node','input'],
 	parent : ['snap','node','input','Basic'],
 	properties: {
-		_element : function ( element ){
+		_initElement : function ( element ){
 			var 
+				$el = this['snap.node.input.Basic']._initElement.call( this, element ),
 				selected,
 				i,
 				c;
 
-			this['snap.node.input.Basic']._element.call( this, element );
-
-			selected = this._select('[selected]');
+			selected = this._select( '[selected]', element );
 
 			if ( selected.length ){
 				for( i = 0, c = selected.length; i < c; i++ ){
@@ -2245,10 +2349,12 @@ bMoor.constructor.define({
 				}
 				selected = selected[ selected.length-1 ];
 			}else{
-				selected = this.element.options[0];
+				selected = element.options[0];
 			}
 
 			this.val( selected.value );
+
+			return $el;
 		},
 		lockValue : function(){
 			if ( this.oldOption ){
@@ -2355,6 +2461,73 @@ bMoor.constructor.decorator({
 }( jQuery, this ));
 ;;(function( $, global, undefined ){
 
+bMoor.constructor.decorator({
+	name : 'Form',
+	namespace : ['snap','node'],
+	require: [
+		['snap','node','input','Text'],
+		['snap','node','input','Checked'],
+		['snap','node','input','Button'],
+		['snap','node','input','Select']
+	],
+	node : {
+		className : 'node-form'
+	},
+	properties : {
+		_finalizeContent : function(){
+			var 
+				dis = this,
+				element = this.element,
+				names = {},
+				fields = [];
+			
+			this._wrapped();
+			
+			elements = element.elements;
+			for( var i = 0, c = elements.length; i < c; i++ ){
+				names[ elements[i].name ] = true;
+			}
+			
+			for ( var name in names ) {
+				var 
+					el,
+					input,
+					field = elements[ name ];
+				
+				if ( name[name.length - 1] == ']' ){
+					name = name.substring( 0, name.length - 2 );
+				}
+				
+				fields.push( name );
+				
+				if ( field instanceof NodeList ){
+					el = field[0];
+				}else{
+					el = field;
+				}
+
+				if ( !el.node ){
+					if ( el.nodeName == 'BUTTON' ){
+						input = new snap.node.input.Button( field );
+					}else if ( el.nodeName == 'SELECT' ){
+						input = new snap.node.input.Select( field );
+					}else{
+						if ( el.type == 'checkbox' || el.type == 'radio' ){
+							input = new snap.node.input.Checked( field );
+						}else if (el.type == 'button' ){
+							input = new snap.node.input.Button( field );
+						}else{
+							input = new snap.node.input.Text( field );
+						}
+					}
+				}
+			}
+		}
+	}
+});
+
+}( jQuery, this ));;;(function( $, global, undefined ){
+
 bMoor.constructor.define({
 	name : 'Abstract',
 	namespace : ['snap','controller'],
@@ -2404,18 +2577,18 @@ bMoor.constructor.define({
 						$(document.body).on( action, className+' '+subselect, function( event ){
 							var
 								node = this,
-								controller,
-								observer;
+								controllerEl,
+								observerEl;
 
-							observer = snap.Core.prototype._findElementWithProperty( 'observer', this );
+							observerEl = snap.Core.prototype._findElementWithProperty( 'observer', this );
 							
-							if ( $(observer).hasClass(className) ){
-								controller = observer;
+							if ( $(observerEl).hasClass(className) ){
+								controllerEl = observerEl;
 							}else{
-								controller = $(this).closest( className )[0];
+								controllerEl = $(this).closest( className )[0];
 							}
 
-							return func.call( this, event, controller.controller, observer.observer );
+							return func.call( this, event, controllerEl.controller, observerEl.observer );
 						});
 					};
 

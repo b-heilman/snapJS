@@ -13,7 +13,7 @@ bMoor.constructor.decorator({
 		className : 'node-form'
 	},
 	properties : {
-		_finalize : function(){
+		_finalizeContent : function(){
 			var 
 				dis = this,
 				element = this.element,
@@ -45,17 +45,19 @@ bMoor.constructor.decorator({
 					el = field;
 				}
 
-				if ( el.nodeName == 'BUTTON' ){
-					input = new snap.node.input.Button( field );
-				}else if ( el.nodeName == 'SELECT' ){
-					input = new snap.node.input.Select( field );
-				}else{
-					if ( el.type == 'checkbox' || el.type == 'radio' ){
-						input = new snap.node.input.Checked( field );
-					}else if (el.type == 'button' ){
+				if ( !el.node ){
+					if ( el.nodeName == 'BUTTON' ){
 						input = new snap.node.input.Button( field );
+					}else if ( el.nodeName == 'SELECT' ){
+						input = new snap.node.input.Select( field );
 					}else{
-						input = new snap.node.input.Text( field );
+						if ( el.type == 'checkbox' || el.type == 'radio' ){
+							input = new snap.node.input.Checked( field );
+						}else if (el.type == 'button' ){
+							input = new snap.node.input.Button( field );
+						}else{
+							input = new snap.node.input.Text( field );
+						}
 					}
 				}
 			}
