@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<script src="../../external/jquery.min.js"></script>
+<script src="../../external/bmoor.min.js" root='../../src'></script>
+	
+<script src="../../src/snap/model/Abstract.js"></script>
+</head>
+<body>
+	
+<script>
+(function( global ){
+
+bMoor.constructor.define({
+	name : 'Model',
+	namespace : ['test'],
+	parent : ['snap','model','Abstract'],
+	properties : {
+		_defaults : { 
+			eins : 1,
+			zwei : 2,
+			drei : 3,
+			string : 'this is it',
+			sum : function(){
+				return this.eins + this.zwei;
+			}
+		},
+		_validations : {
+			string : function( val ){
+				return typeof(val) == 'string';
+			}
+		}
+	}
+});
+
+}( this ));
+
+(function( global ){
+
+var model = new test.Model({
+	woot : 'yay',
+	string : 1
+});
+
+console.log( model.woot );
+console.log( model.string );
+
+model.set( 'string',2 );
+console.log( model.string );
+
+model.string = 3;
+console.log( model.string );
+
+model.set( 'string','Another string' );
+console.log( model.string );
+
+console.log( model );
+console.log( model.sum() );
+console.log( model.toJson() );
+
+}( this ));
+</script>
+</body>
+</html>

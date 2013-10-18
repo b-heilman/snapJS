@@ -9,8 +9,23 @@ bMoor.constructor.define({
 			var glyphs = [];
 
 			glyphs.active = null;
-			glyphs.glyphClass = 'snap.glyphing.node.Glyph';
-			
+
+			glyphs.activate = function( glyph ){
+				if ( glyphs.active ){
+					glyphs.active.active = false;
+				}
+
+				glyph.active = true;
+				glyphs.active = glyph;
+			};
+
+			glyphs.deactivate = function( glyph ){
+				if ( glyph === undefined || active === glyph ){
+					active.active = false;
+					glyphs.active = null;
+				}
+			}
+
 			return glyphs;
 		}
 	}

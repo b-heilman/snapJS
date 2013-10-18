@@ -91,6 +91,7 @@
 					key;
 
 				changes = this._clean();
+
 				if ( this._needNotify(changes) ){
 					for( key in settings ){
 						changes[ key ] = settings[ key ];
@@ -109,13 +110,16 @@
 				
 				return this;
 			},
+			_cleanse : function(){
+				return this.model;
+			},
 			_clean : function(){
 				var
 					list,
 					i,
 					c,
 					val,
-					model = this.model,
+					model = this._cleanse(),
 					changes = {},
 					cleaned = this.cleaned;
 				

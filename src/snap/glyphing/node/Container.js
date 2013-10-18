@@ -67,23 +67,26 @@ bMoor.constructor.define({
 		},
 		globals : {
 			'keydown' : function( event, $instances, helpers ){
+				console.log( event.keyCode );
 				if( !($(event.target).is(':input') ) ){
 					if ( (event.keyCode == 8 || event.keyCode == 46) ){
+						// delete : esc / delete
 						$instances.each(function(){
 							var 
 								dis = this.node,
 								model = dis.observer.model;
 							
 							if ( !model.locked && model.active ){
-								dis.observer.model.active.remove = true;
-								dis.observer.model.active = null;
+								dis.observer.model.active.$remove = true;
+								dis.observer.model.deactivate();
 							}
 						});
 						
 						event.stopPropagation();
 						event.preventDefault();
 					}else if ( event.keyCode == 16 ){
-						$instances.each(function(){
+						// next : shift
+						$instances.each(function(){    
 							var 
 								dis = this.node,
 								model = dis.observer.model;
@@ -91,13 +94,13 @@ bMoor.constructor.define({
 							if ( model.active ){
 								var pos = model.find( model.active );
 								
-								if ( pos == -1 || pos == dis.glyphs.length - 1 ){
-									model.active = model[0];
+								if ( pos == -1 || pos == model.length - 1 ){
+									model.activate( model[0] );
 								}else{
-									model.active = model[pos + 1];
+									model.activate( model[pos + 1] );
 								}
 							}else{
-								model.active = model[0];
+								model.activate( model[0] );
 							}
 						});
 						
@@ -117,15 +120,8 @@ bMoor.constructor.define({
 		actions : {
 			'mousedown' : {
 				'.glyphing-glyph' : function( event, node ){
-					var model = this.node.observer.model;
+					this.node.observer.model.activate();
 					
-					if ( node.observer.model.active ){
-						node.observer.model.active.active = false; 
-					}
-
-					node.observer.model.active = model;
-					model.active = true;
-				
 					event.stopPropagation();
 					event.preventDefault();
 				},
@@ -138,22 +134,16 @@ bMoor.constructor.define({
 							helpers.lastPosition.x - offset.left,
 							helpers.lastPosition.y - offset.top
 						);
-					
-					if ( !glyph.instanceClass ){
-						glyph.instanceClass = model.glyphClass;
-					}
 
 					if ( !model.locked ){
-						if ( node.observer.model.active ){
-							node.observer.model.active.active = false; 
-						}
-
-						model.push( glyph );
-						model.active = glyph;
-						glyph.active = true;
+						model.unshift( glyph );
+						glyph.activate();
 						
 						helpers.creationDrag( glyph );
 					}
+
+					event.stopPropagation();
+					event.preventDefault();
 				}
 			}
 		}
@@ -170,6 +160,7 @@ bMoor.constructor.define({
 		defaultTemplate : 'glyphing-container-insert',
         _initModel : function( parentModel ){
 			var 
+				offset,
 				model = this['snap.node.List']._initModel.call( this, parentModel ),
 				$img = this.$.find('img'),
 				$target = $img.length ? $img : this.$,
@@ -197,7 +188,7 @@ bMoor.constructor.define({
 			});
 			
 			if ( model.settings.keepBoxed ){
-				var offset = this.$.offset();
+				offset = this.$.offset();
 				
 				model.box = {
 					top    : offset.top,
@@ -209,10 +200,14 @@ bMoor.constructor.define({
 				model.box = null;
 			}
 
-				return model;
+			return model;
 		},
 		_makeGlyph : function( box, leftCenter, topCenter ){
-			return new snap.glyphing.model.Glyph( box, leftCenter, topCenter );
+			return new snap.glyphing.model.Glyph( 
+				this.observer.model, 
+				this.observer.model.box, 
+				leftCenter, topCenter 
+			);
 		},
 		lock : function(){
 			this.$.removeClass( 'unlocked' );

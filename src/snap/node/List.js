@@ -78,6 +78,7 @@ bMoor.constructor.define({
 				if ( removals ){
 					for( i in removals ){
 						row = removals[ i ];
+						
 						// row is a Map here
 						if ( typeof(row) == 'object' ){
 							// this means it was removed, otherwise it would be a number
@@ -97,9 +98,14 @@ bMoor.constructor.define({
 				}
 				
 				moves = alterations.moves;
-				
+				console.log( data );
 				for( i = 0, c = data.length; i < c; i++ ){
+					console.log( i, data[i]._.snapid );
 					if ( moves[i] ){
+						console.log( i, moves[i]._.snapid, moves[i], data[i-1], data[i-1] ? data[i-1]._.snapid : null );
+						// data is the stack of objects
+						// moves is a hash of the objects with their new position
+						// moves get inserted after the data
 						this.insert( moves[i], template, data[i-1] );
 					}
 				}
@@ -168,37 +174,39 @@ bMoor.constructor.define({
 				nodes,
 				node,
 				next,
-				rowContent,
+				prevRow,
+				thisRow,
 				els,
 				element,
 				observer = model._;
 
-			// TODO : rows -> nodes
-			if ( previous && (rowContent = this.rows[previous._.snapid]) ){
-				previous = rowContent[ rowContent.length - 1 ];
-			}else{
-				previous = this.mountPoint.above;
-			}
+			thisRow = this.rows[ model._.snapid ];
 
-			rowContent = this.rows[ model._.snapid ];
-
-			if ( !rowContent ){
+			if ( !thisRow ){
 				els = this._makeChildren( model, template );
 
-				rowContent = this.rows[ model._.snapid ] = [];
+				thisRow = this.rows[ model._.snapid ] = [];
 
 				element = els.firstChild;
 
 				while( element ){
 					this._pushObserver( element, observer );
-					rowContent.push( element );
+					thisRow.push( element );
 					
 					element = element.nextSibling;
 				}
 			}
 
-			for( i = 0, c = rowContent.length; i < c; i++ ){
-				element = rowContent[i];
+			// TODO : rows -> nodes
+			if ( previous && (prevRow = this.rows[previous._.snapid]) ){
+				previous = prevRow[ prevRow.length - 1 ];
+				thisRow.previous = prevRow;
+			}else{
+				previous = this.mountPoint.above;
+			}
+
+			for( i = 0, c = thisRow.length; i < c; i++ ){
+				element = thisRow[i];
 
 				this._insert( element, previous );
 				this._finalizeElement( element );
@@ -208,6 +216,7 @@ bMoor.constructor.define({
 
 			return els;
 		},
+		// TODO : a lot of the mountpoint is completely pointless
 		_insert : function( element, mount ){
 			if ( element.nodeType != 3 ){
 				if ( mount ){

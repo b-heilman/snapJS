@@ -93,8 +93,18 @@ bMoor.constructor.singleton({
 						i,
 						renders,
 						node = bMoor.get( create ),
-						el = new node( element, {}, true );
+						el;
 					
+					if ( !node ){
+						throw 'Bootstrap tried to find: '+create;
+					}
+
+					try{
+						el = new node( element, {}, true );
+					}catch ( ex ){
+						throw 'Bootstrap tried to create: '+create;
+					}
+
 					for( i = 0; i < visages.length; i++ ){
 						bMoor.get( visages[i], true )._decorate( el );
 					}
@@ -144,7 +154,17 @@ bMoor.constructor.singleton({
 					var 
 						i,
 						controller = bMoor.get( create ),
+						el;
+
+					if ( !controller ){
+						throw 'Bootstrap tried to find: '+create;
+					}
+
+					try{
 						el = new controller( element, {}, args, true );
+					}catch (ex) {
+						throw 'Bootstrap tried to create: '+create;
+					}
 
 					for( i = 0; i < stints.length; i++ ){
 						bMoor.get( stints[i], true )._decorate( el );

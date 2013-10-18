@@ -1,7 +1,7 @@
 ;(function( global, undefined ){
 	bMoor.constructor.define({
 		name : 'Canvas',
-		namespace : ['bmoor', 'drawing'],
+		namespace : ['snap','drawing','lib'],
 		construct : function( obj ){
 		},
 		properties : {

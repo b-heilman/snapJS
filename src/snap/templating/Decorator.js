@@ -12,14 +12,29 @@ bMoor.constructor.decorator({
 			return this.run( this.prepare(id,raw), data );
 		},
 		prepare : function( id, raw ){
-			if ( raw ){
-				return this._wrapped( id );
-			}else{
-				if ( !this.prepared[id] ){
-					this.prepared[id] = this._wrapped( bMoor.module.Resource.loadTemplate(id) );
-				}
+			var 
+				proto,
+				type = typeof(id);
+			
+			if ( type == 'string' ){
+				if ( raw ){
+					proto = this._wrapped( id );
+					proto.isTemplate = true;
 
-				return this.prepared[id];
+					return proto;
+				}else{
+					if ( !this.prepared[id] ){
+						proto = this._wrapped( bMoor.module.Resource.loadTemplate(id) );
+						proto.isTemplate = true;
+
+						this.prepared[id] = proto;
+					}
+
+					return this.prepared[id];
+				}
+			}else if ( type == 'function' ){
+				// TODO : more tests, but for now assume function is a template
+				return content;
 			}
 		}
 	}

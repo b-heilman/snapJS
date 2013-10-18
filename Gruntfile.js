@@ -19,6 +19,7 @@ module.exports = function(grunt) {
 			dist: {
 				src: [
 					'external/bmoor.min.js',
+					'src/snap/model/Abstract.js',
 					'src/snap/observer/Map.js',
 					'src/snap/observer/Collection.js',
 					'src/snap/Core.js', 

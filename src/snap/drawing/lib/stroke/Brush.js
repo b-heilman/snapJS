@@ -1,7 +1,7 @@
 ;(function( global, undefined ){
 	bMoor.constructor.define({
 		name : 'Brush',
-		namespace : ['bmoor','drawing','stroke'],
+		namespace : ['snap','drawing','lib','stroke'],
 		construct : function( ctx, settings ){
 			this.ctx = ctx;
 			

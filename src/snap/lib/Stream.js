@@ -18,66 +18,71 @@
 			this._listeners = [];
 			this._data = {};
 		},
+		// TODO : revisit this to simplify the logic...
 		properties : {
 			// map : my var -> stream var, or a function
 			// reverse : stream var -> my var, or a function
-			bind : function( observer, map, reverse ){
+			pushing : function( observer, map ){
 				var 
+					func,
 					key,
 					dis = this;
 
 				// registers anything going from the observer into the stream
-				if ( map ){
-					if ( typeof(map) == 'function' ){
-						// this is impossible, they really meant reverse
-						reverse = map;
-					}else{
-						// flip the map inside out
-						if ( !reverse ){
-							reverse = {};
-							for( key in map ){
-								reverse[ map[key] ] = key;
+				if ( typeof(map) == 'object' ){
+					func = function( alterations ){
+						var key;
+
+						for( key in alterations ) if ( alterations.hasOwnProperty(key) ){
+							if ( map[key] ) {
+								dis.push( map[key], this.model[key] );
 							}
 						}
-
-						observer.bind(function( alterations ){
-							var key;
-
-							for( key in alterations ) if ( alterations.hasOwnProperty(key) ){
-								if ( map[key] ) {
-									dis.push( map[key], this.model[key] );
-								}
-							}
-						});
-					}
-				}else{
-					observer.bind(function( alterations ){
+					};
+				}else if ( map === true ){
+					func = function( alterations ){
 						var key;
 
 						for( key in alterations ) if ( alterations.hasOwnProperty(key) ){
 							dis.push( key, this.model[key] );
 						}
-					});
+					};
 				}
-				
+
+				if ( func ){
+					observer.bind( func );
+					this.push( observer.model );
+				}
+			},
+			pulling : function( observer, map ){
+				var 
+					key,
+					type = typeof(map),
+					func;
+
 				// registers anything going from the stream into the observer
-				if ( reverse ){
-					if ( typeof(reverse) == 'function' ){
-						this._listeners.push( reverse );
-					}else{
-						this._listeners.push(function( key, val ){
-							var field = reverse[ key ];
-							
-							if ( field ) {
-								observer.model[ field ] = val;
-							}
-						});
-					}
+				if ( type === 'object' ) {
+					func = function( key, val ){
+						var field = map[ key ];
+						
+						if ( field ) {
+							observer.model[ field ] = val;
+						}
+					};
+				}else if ( type !== 'function' ) {
+					func = function( key, val ){
+						observer.model[ key ] = val;
+					};
 				}else{
-					this._listeners.push(function( key, val ){
-						observer.model[key] = val;
-					});
+					func = map;
 				}
+
+				for( key in this._data ){
+					console.log( key, this._data[key] );
+					func( key, this._data[key] );
+				}
+
+				this._listeners.push( func );
 			},
 			pull : function(){
 				var 

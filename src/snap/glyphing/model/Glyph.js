@@ -6,11 +6,12 @@ bMoor.constructor.define({
 		minWidth  : 20,
 		minHeight : 20
 	},
-	construct : function( box, centerLeft, centerTop, width, height ){
+	construct : function( list, box, centerLeft, centerTop, width, height ){
 		var settings = this.__static;
 
 		this.settings = settings;
 
+		this.parentList = list;
 		this.box = box;
 		this.active = false;
 
@@ -21,8 +22,16 @@ bMoor.constructor.define({
 		this.top = centerTop - this.height / 2;
 		this.angle = 0;
 		this.opacity = 1;
+
+		this.instanceClass = 'snap.glyphing.node.Glyph';
 	},
 	properties : {
+		activate : function(){
+			this.parentList.activate( this );
+		},
+		deactivate : function(){
+			this.parentList.deactivate( this );
+		},
 		toJson : function(){
 			return JSON.stringify( this.toObject() );
 		},

@@ -2,24 +2,26 @@
 
 bMoor.constructor.define({
 	name : 'Sketch',
-	namespace : ['bmoor','drawing'],
-	parent : ['bmoor','snap','Node'],
+	namespace : ['snap','drawing','node'],
+	parent : ['snap','node','Basic'],
 	require: [
 		['bmoor','lib','MouseTracker'],
-		['bmoor','drawing','Context'],
-		['bmoor','drawing','stroke','Brush']
+		['snap','drawing','lib','Context'],
+		['snap','drawing','lib','stroke','Brush'],
+		['snap','drawing','controller','Sketch']
 	],
 	node : {
 		className : 'drawing-sketch',
 		helpers : {
-			lastPosition : bmoor.lib.MouseTracker
+			lastPosition : bmoor.lib.mouseTracker
 		},
 		actions : {
 			'mousedown' : function ( event, node, helpers ) {
 				var 
 					lastPosition = helpers.lastPosition,
 					offset = node.$.offset(),
-					stroke = new (bMoor.get( node.model.stroke ))( node.ctx, node.model ),
+					model = node.observer.model,
+					stroke = new (bMoor.get( model.stroke ))( node.ctx, model ),
 					onMove = function( event ){
 						stroke.move( event.pageX - offset.left, event.pageY - offset.top );
 					},
@@ -33,7 +35,7 @@ bMoor.constructor.define({
 						$(document.body).unbind( 'mouseup', onUp );
 						$(document.body).unbind( 'mouseout', onOut );
 					};
-				
+
 				stroke.start( lastPosition.x - offset.left, lastPosition.y - offset.top );
 				
 				$(document.body).bind( 'mousemove', onMove );
@@ -45,7 +47,10 @@ bMoor.constructor.define({
 		}
 	},
 	properties : {
-		_element : function( element ){
+		defaultController : ['snap','drawing','controller','Sketch'],
+		_initElement : function( element ){
+			var $el;
+
 			if ( element.nodeName != 'CANVAS' ){
 				var canvas = document.createElement('canvas');
 				
@@ -60,28 +65,15 @@ bMoor.constructor.define({
 				element = canvas;
 			}
 			
-			this.__Node._element.call( this, element );
+			$el = this['snap.node.Basic']._initElement.call( this, element );
 			
-			this.ctx = new bmoor.drawing.Context( this.element, 3 );
+			this.ctx = new snap.drawing.lib.Context( element, 3 );
 			
 			element.style.cssText += '-moz-user-select: none; -khtml-user-select: none; -webkit-user-select: none; user-select: none;';
 			element.setAttribute('unselectable', 'on');
 			element.onselectstart = function() { if (dragging) return false; };
-		},
-		_model : function(){
-			this.__Node._model.call( this );
 
-			if ( !this.model.color ){
-				this.model.color = 'black';
-			}
-			
-			if ( !this.model.width ){
-				this.model.width = 1;
-			}
-			
-			if ( !this.model.stroke ){
-				this.model.stroke = 'bmoor.drawing.stroke.Brush';
-			}
+			return $el;
 		},
 		save : function(){
 			return this.ctx.toDataURL();

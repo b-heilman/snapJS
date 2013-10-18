@@ -1,7 +1,7 @@
 ;(function( global, undefined ){
 	bMoor.constructor.define({
 		name : 'Erase',
-		namespace : ['bmoor','drawing','stroke'],
+		namespace : ['snap','drawing','lib','stroke'],
 		construct : function( ctx, settings ){
 			this.ctx = ctx;
 			this.width = settings.width;

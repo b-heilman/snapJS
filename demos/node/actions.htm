@@ -26,38 +26,6 @@
 		}; 
 
 	bMoor.constructor.define({
-		name : 'Tester',
-		namespace : ['test'],
-		parent: ['snap','node','View'],
-		node : {
-			className : 'tester',
-			actions : {
-				'mouseover' : function(){
-					console.log( 'mouseover' );
-				},
-				'click' : {
-					'' : function(){
-						alert('ouch');
-					},
-					'b' : function( event ){
-						alert('bold');
-						event.stopPropagation();
-					},
-					'.snap-node' : function( event, node, helpers ){
-						if ( !helpers.count ){
-							helpers.count = 1;
-						}else{
-							helpers.count++;
-						}
-						
-						console.log( helpers.count, node );
-					}
-				}
-			}
-		}
-	});
-
-	bMoor.constructor.define({
 		name : 'Controller',
 		namespace : ['test'],
 		parent : ['snap','controller','Abstract'],
@@ -67,27 +35,64 @@
 				['snap','observer','Collection']
 			]
 		},
+		controller : {
+			className : 'tester',
+			actions : {
+				'mouseover' : 'mouseover',
+				'click' : {
+					''  : 'ouch',
+					'b' : 'bold',
+					'.node-basic' : 'count'
+				}
+			}
+		},
 		properties : {
+			mouseover : function( event, element, observer, node, share ){
+				console.log( 'mouseover' );
+			},
+			ouch : function(){
+				alert( 'ouch' );
+			},
+			bold : function( event ){
+				alert( 'bold' );
+				event.stopPropagation();
+			},
+			count : function( event, element, observer, node, share ){
+				if ( !share.count ){
+					share.count = 1;
+				}else{
+					share.count++;
+				}
+				
+				console.log( share.count, node );
+			},
 			_initModel : function( ){ 
 				return dataSet;
 			}
 		}
 	});
+
+	bMoor.constructor.define({
+		name : 'Tester',
+		namespace : ['test'],
+		parent: ['snap','node','View'],
+		properties : {
+			defaultController : ['test','Controller'],
+			defaultTemplate : 'eins',
+			templates : {
+				eins : function(){/*
+<b><#= this.foo #></b>
+<span snap-node="snap.node.View" snap-template="zwei" snap-scope="bar"></span>
+				*/},
+				zwei : function(){/*
+<i><#= this.uh #></i>
+				*/}
+			}
+		}
+	});
 </script>
 
-<div snap-node="test.Tester" snap-template="template1" snap-controller="test.Controller"></div>
+<div snap-node="test.Tester"></div>
 
-<script>var dataSet = { foo:'foot', bar:{uh:'yay'} };</script>
-<script type="text/html" id="template1">
-<![CDATA[
-	<b><#= this.foo #></b>
-	<span snap-node="snap.node.View" snap-template="template2" snap-scope="bar"></span>
-]]>
-</script>
-<script type="text/html" id="template2">
-<![CDATA[
-	<i><#= this.uh #></i>
-]]>
-</script>
 </body>
 </html>

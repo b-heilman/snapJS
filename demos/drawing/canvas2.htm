@@ -1,38 +1,35 @@
 <html>
 <head>
-	<script src='../../src/jquery.min.js'></script>
-	<script src='../../src/bMoor.js'></script>
+	<script src='../../external/jquery.min.js'></script>
+	<script src='../../build/snap.min.js' root='../../src'></script>
 	
-	<script>
-		bMoor.autoload.setRoot('../../src');
-		bMoor.autoload.setLibrary( ['jquery'], '../../src/jquery', {fullName : true} );
-	</script>
-	
-	<script src='../../src/bmoor/model/Map.js'></script>
-	<script src='../../src/bmoor/lib/WaitFor.js'></script>
-	<script src='../../src/bmoor/lib/Bootstrap.js'></script>
-	<script src='../../src/bmoor/lib/MouseTracker.js'></script>
-	<script src='../../src/bmoor/snap/Node.js'></script>
-	<script src='../../src/bmoor/drawing/Context.js'></script>
-	<script src='../../src/bmoor/drawing/Sketch.js'></script>
-	<script src='../../src/bmoor/snap/form/Button.js'></script>
+	<script src='../../src/snap/drawing/lib/Context.js'></script>
+	<script src='../../src/snap/drawing/node/Sketch.js'></script>
 </head>
 <body>
-	<div id='wrapper' snap-node='bmoor.drawing.Sketch' snap-publish='this.sketch' style='width: 500px; height: 500px; border: 1px solid black;'></div>
 	<div>
-		<button snap-node='bmoor.snap.form.Button' snap-data='this.sketch.data' snap-variable='width' value='1'>1</button>
-		<button snap-node='bmoor.snap.form.Button' snap-data='this.sketch.data' snap-variable='width' value='2'>2</button>
-		<button snap-node='bmoor.snap.form.Button' snap-data='this.sketch.data' snap-variable='width' value='3'>3</button>
-	</div>
-	<div>
-		<button snap-node='bmoor.snap.form.Button' snap-data='this.sketch.data' snap-variable='color' value='black'>Black</button>
-		<button snap-node='bmoor.snap.form.Button' snap-data='this.sketch.data' snap-variable='color' value='red'>Red</button>
-		<button snap-node='bmoor.snap.form.Button' snap-data='this.sketch.data' snap-variable='color' value='green'>Green</button>
+		<canvas id='wrapper' snap-node='snap.drawing.node.Sketch' style='width: 500px; height: 500px; border: 1px solid black;'></canvas>
+		<div snap-controller="snap.drawing.controller.Menu">
+			<div>
+				<button snap-node='snap.node.input.Button' name='width' value='1'>1</button>
+				<button snap-node='snap.node.input.Button' name='width' value='2'>2</button>
+				<button snap-node='snap.node.input.Button' name='width' value='3'>3</button>
+			</div>
+			<div>
+				<button snap-node='snap.node.input.Button' name='color' value='black'>Black</button>
+				<button snap-node='snap.node.input.Button' name='color' value='red'>Red</button>
+				<button snap-node='snap.node.input.Button' name='color' value='green'>Green</button>
+			</div>
+		</div>
 	</div>
 	<script>
-	var save;
+	var 
+		sketch,
+		save;
 	
 	setTimeout(function(){
+		sketch = document.getElementById('wrapper').node;
+
 		var context = sketch.ctx;
 		
 		context.beginPath();

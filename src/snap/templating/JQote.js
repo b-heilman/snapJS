@@ -18,7 +18,14 @@ bMoor.constructor.mutate({
 			return this.run( this.prepare(content), data );
 		},
 		prepare : function( content ){
-			return $.jqotec( content );
+			var type = typeof( content );
+			console.log( '->', content );
+			if ( type == 'string' ){
+				return $.jqotec( content );
+			}else if ( type == 'function' ){
+				// TODO : more tests, but for now assume function is a template
+				return content;
+			}
 		},
 		run : function( prepared, data ){
 			return $.jqote( prepared, data );

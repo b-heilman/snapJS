@@ -16,6 +16,7 @@ bMoor.constructor.define({
 			'bMoor.module.Bootstrap' : ['snap','lib','Bootstrap']
 		}
 	},
+	// this is a reference to the class
 	onDefine : function( settings ){
 		var 
 			dis = this,
@@ -37,53 +38,6 @@ bMoor.constructor.define({
 					this.baseClass = node.className;
 				}
 			}
-			
-			$(document).ready(function(){
-				var 
-					action,
-					act,
-					className = '.'+dis.className.split(' ')[0], // the primary class should always be on the left
-					helpers = node.helpers ? node.helpers : {},
-					makeGlobal = function( action, func ){
-						// this seems highly inefficient, is there a better way?
-						// -> maybe have the contructor build a list of all instances, keep it somewhere?
-						$(document.body).on( action, function(event){
-							func( event, $(className), helpers );
-						});
-					},
-					// TODO : maybe subselect goes away from here and into the controller?
-					makeSplitAction = function( action, subselect, func ){
-						if ( subselect === '' ){
-							$(document.body).on( action, className, function( event ){
-								func.call( this, event, this.node, helpers );
-							});
-						}else{
-							$(document.body).on( action, className+' '+subselect, function( event ){
-								func.call( this, event, $(this).closest(className)[0].node, helpers );
-							});
-						}
-					}, 
-					makeAction = function( action, func ){
-						if ( typeof(func) == 'function' ){
-							$(document.body).on( action, className, function( event ){
-								func.call( this, event, this.node, helpers );
-							});
-						}else{
-							for( var a in func ){
-								makeSplitAction( action, a, func[a] );
-							}
-						}
-					};
-				
-				// TODO : should prolly just make these an each
-				for( action in node.globals ){
-					makeGlobal( action, node.globals[action] );
-				}
-				
-				for( action in node.actions ){
-					makeAction( action, node.actions[action] );
-				}
-			});
 		}
 	},
 	node : {
@@ -101,13 +55,13 @@ bMoor.constructor.define({
 	properties : {
 		defaultController : null, // remember to preload this
 		init : function( element ){
-			this.classBindings = [];
-			this.makeClass = null;
-			this.observing = false;
-
 			if ( !element ){
 				element = this.element;
 			}
+			
+			this.classBindings = [];
+			this.makeClass = null;
+			this.observing = false;
 			this.nodeId = nodesCount++;
 			
 			this.$ = this._initElement( element );
@@ -130,6 +84,10 @@ bMoor.constructor.define({
 				dis = this,
 				controller,
 				attr;
+
+			if ( !element ){
+				throw this.__class+' was never passed an element';
+			}
 
 			this['snap.Core']._initElement.call( this, element );
 
@@ -180,6 +138,7 @@ bMoor.constructor.define({
 			
 			if ( !this.element.controller ){
 				attr = this._getAttribute( 'observe' );
+				
 				if ( attr ){
 					scope = attr.split('.');
 					info = this._unwrapVar( model, scope, true );

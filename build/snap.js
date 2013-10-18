@@ -1,5 +1,65 @@
 /*! bmoor 2013-10-10 */
-!function(a,b,c){"use strict";function d(a){console&&console.log&&(console.log(a),console.trace())}function e(){}function f(){this.args=arguments}function g(){}var h=document.getElementsByTagName("script"),i=h[h.length-1],j={},k={templator:["bmoor","templating","JQote"],templatorTag:"#",jsRoot:i.hasAttribute("root")?i.getAttribute("root"):i.getAttribute("src").match(/^(.*)\/b[Mm]oor(\.min)?\.js/)[1]};String.prototype.trim||(String.prototype.trim=function(){return this.replace(/^\s+|\s+$/g,"")});var l={parse:function(a){return a?"string"==typeof a?a.split("."):a.length?a.slice(0):a:[]},get:function(a,c){var d,e,f=b;if(a&&("string"==typeof a||a.length)){a=this.parse(a),c&&(d=a.length-1,e=a[d],a[d]=e.charAt(0).toLowerCase()+e.slice(1));for(var g=0;g<a.length;g++){var h=a[g];f[h]||(f[h]={}),f=f[h]}}return f},exists:function(a,c){var d,e,f=b;if(a){if("string"==typeof a||a.length){a=this.parse(a),c&&(d=a.length-1,e=a[d],a[d]=e.charAt(0).toLowerCase()+e.slice(1));for(var g=0;g<a.length;g++){var h=a[g];if(!f[h])return null;f=f[h]}return f}return a}return null}},m={requests:0,onReady:[]};!function(){var a={},b={};m.parseResource=function(a){var b=a.match(/^(.*)\/(js|src)/);return b?b[1]:a.match(/^[js|src]/)?null:null},m.reset=function(){b={".":{fullName:!1},">":this.parseResource(k.jsRoot),"/":k.jsRoot,jquery:{"/":k.jsRoot+"/jquery",".":{fullName:!0}}}},m.reset(),m.setRoot=function(a){b["/"]=a,b[">"]=this.parseResource(a)},m.setLibrary=function(a,d,e,f){var g=b,h=l.parse(a);for(e||(e={});h.length;){var i=h.shift();g[i]===c&&(g[i]={}),g=g[i]}g["/"]=d,g["."]=e,g["*"]=f===!0,g[">"]=this.parseResource(d)},m.delLibrary=function(a){for(var c=b,d=null,e=null,f=l.parse(a);f.length&&c;){var g=f.shift();c[g]?(d=c,e=g,c=c[e]):c=null}c&&delete d[e]},m.getLibrary=function(a,c){for(var d=b,e=b,f=l.parse(a),g=c?null:f.pop(),h=f.slice(0);f.length;){var i=f[0];if(!d[i])break;d=d[f.shift()],d["/"]&&(e=d,h=f.slice(0))}return e["*"]?{root:e["/"],path:[],name:g,settings:e["."],resource:e[">"]}:{root:e["/"],path:h,name:g,settings:e["."],resource:e[">"]}},m.loadSpace=function(b,f,g,h,i){function j(){i===c&&(i={}),h===c&&(h=[]),g.apply(i,h)}function k(a){var c=l.exists(b);!c||c instanceof e||c.prototype&&c.prototype.__defining?setTimeout(k,10):g?(clearTimeout(a),j()):clearTimeout(a)}var m;if(b=l.parse(b),"function"==typeof f?(i=h,h=g,g=f,f=b):f||(f=b),m=l.exists(b))m instanceof e?k():j();else{var n=this.getLibrary(f),o=n.root+(n.path.length?"/"+n.path.join("/"):"")+"/"+(n.settings.fullName?f.join("."):n.name),p=function(c){var e,f,g,h=a[o];for(e=setTimeout(function(){l.exists(b)||d("loaded file : "+c+"\n but no class : "+b.join("."))},5e3),f=0,g=h.length;g>f;f++)h[f](e);a[o]=!0};a[o]?a[o].push(k):"boolean"==typeof a[o]?k():(a[o]=[k],bMoor.module.Resource.loadScriptSet(o+".js",o+".min.js",p))}},m.done=function(a){0===this.requests?a():this.onReady.push(a)},m.require=function(a,b,c){function d(){var a,c,d,e,f=[];if(m--,0===m){for(k.requests--,m--,c=0,a=p,d=a?a.length:0;d>c;c++)f.push(l.get(a[c]));if(b.apply({},f),0===k.requests){for(;k.onReady.length;)e=k.onReady.shift(),e();k.onReady=[]}}}var e,f,g,h,i,j,k=this,m=1,n=null,o=null,p=null;for(a.substring?(o=p=[a],n={}):a.length?(o=p=a,n={}):(n=a.references?a.references:{},o=a.classes?a.classes:[],p=a.aliases?a.aliases:[]),this.requests++,i=0,h=o,j=h?h.length:0;j>i;i++)f=l.parse(h[i]),m++,this.loadSpace(f,d);for(g in n)f=l.parse(g),m++,this.loadSpace(f,n[g],d);if(a.scripts&&(m++,bMoor.module.Resource.loadScript(a.scripts,d,c?c+"/js/":"js/")),a.styles)for(g in a.styles)m++,e=a.styles[g],"/"!=e.charAt(0)&&(e=c?c+"/css/"+e:"css/"+e),bMoor.module.Resource.loadStyle(e,d);if(a.templates)for(g in a.templates)m++,e=a.templates[g],"/"!=e.charAt(0)&&(e=c?c+"/template/"+e:"template/"+e),bMoor.module.Resource.loadScript(e,d);d()}}(),function(){function c(a,b,c){var d=typeof c,e=b[a];"function"==d?b[a]=function(){var a,b=this._wrapped;return this._wrapped=e,a=c.apply(this,arguments),this._wrapped=b,a}:"string"==d&&(b[a]+=" "+c)}function d(a,c,d){var e=c.parent?l.get(c.parent):null,f=c.namespace?l.parse(c.namespace):[],g=c.namespace?l.get(f):b;if(e&&(e.prototype.__name||(e.prototype.__name=c.parent),a.extend(d,e),e.prototype.__onDefine))if(c.onDefine){var h=c.onDefine;c.onDefine=function(a,b,c,d){e.prototype.__onDefine.call(this,a,b,c,d),h.call(this,a,b,c,d)}}else c.onDefine=e.prototype.__onDefine;d.prototype.__construct=c.construct?c.construct:e?e.prototype.__construct:function(){},d.prototype.__defining=!0,g[c.name]=d,f.push(c.name),d.prototype.__class=f.join("."),d.prototype.__name=f.pop(),c.onDefine&&(d.prototype.__onDefine=c.onDefine),c.aliases&&a.alias(d,c.aliases),a.statics(d,c.statics),c.properties&&a.properties(d,c.properties)}var h=[],i=!1,k=0;g.prototype.define=function(c){function g(){var e,f=l.exists(c.parent);if(f&&f.prototype.__defining)setTimeout(g,10);else if(d(j,c,q),c.onDefine&&(e=c.onDefine.apply(q.prototype,[c,p,c.name,q])),e||(e=p[c.name]),c.onReady&&a(document).ready(function(){m.done(function(){c.onReady(e)})}),delete q.prototype.__defining,k--,0===k)for(;h.length;){var i=h.pop();i(a,b)}}var j=this,n=c.require,o=m.getLibrary(c.namespace,!0).resource,p=l.get(l.parse(c.namespace)),q=function(){i||this.__construct.apply(this,arguments[0]instanceof f?arguments[0].args:arguments)};if(k++,!c.name)throw"Need name for class";p[c.name]=new e,n?n.length&&(n={classes:n}):n={},c.parent&&(n.classes?n.classes.push(c.parent):n.classes=[c.parent]),c.aliases&&(n.aliases=c.aliases),m.require(n,g,o)},g.prototype.singleton=function(a){var b=a.onDefine?a.onDefine:function(){};a.onDefine=function(a,c,d,e){var f,g=new e,h=d.charAt(0).toLowerCase()+d.slice(1);return c[h]=g,b.apply(this,[a,c,d,e,g]),a.module&&(f=a.module,f=f.charAt(0).toUpperCase()+f.slice(1).toLowerCase(),j[f]=g),g},this.define(a)},g.prototype.factory=function(a){var b=a.onDefine?a.onDefine:function(){};a.onDefine=function(a,c,d,e){var f={},g=function(){return Array.prototype.push.call(arguments,e),a.factory.apply(f,arguments)};c[d.charAt(0).toLowerCase()+d.slice(1)]=g,b.apply(this,arguments)},this.define(a)},g.prototype.decorator=function(a){var b,d;a.properties||(a.properties={}),b=a.properties._decorate,d=a.construct,delete a.properties._decorate,delete a.construct,a.properties._decorate=function(a,e){var f;d&&(e?c("__construct",a,function(){this._wrapped&&this._wrapped.apply(this,arguments),d.apply(this,arguments)}):d.apply(a));for(f in this)"__construct"!==f&&"_decorate"!==f&&(a[f]?c(f,a,this[f]):a[f]=this[f]);return b&&b.call(a),a},this.singleton(a)},g.prototype.mutate=function(a,b){var c,d,e=a.onDefine?a.onDefine:function(){};if(a.decorators){for(d="string"==typeof a.decorators?d.split(","):a.decorators,a.require?a.require.length&&(a.require={classes:a.require}):a.require={},a.require.classes||(a.require.classes=[]),c=0;c<d.length;c++)a.require.classes.push(d[c]);a.onDefine=function(a,b,c,f){var g,h,i;for(e.apply(this,[a,b,c,f]),g=0,i=d,h=i.length;h>g;g++)l.get(i[g],!0)._decorate(this,!0);for(g in a.noOverride)this[g]=a.noOverride[g]}}b?this.singleton(a):this.define(a)},g.prototype.properties=function(a,b){for(var c in b)a.prototype[c]=b[c]},g.prototype.statics=function(b,c){b.prototype.__static?(b.prototype.__static={},a.extend(b.prototype.__static,c)):b.prototype.__static=c?c:{}},g.prototype.alias=function(a,b){for(var c in b){var d=b[c];a.prototype["__"+d]=l.get(c).prototype}},g.prototype.extend=function(a,b){i=!0,a.prototype=new b,a.prototype.constructor=a,a.prototype[b.prototype.__class]=b.prototype,i=!1},g.prototype.loaded=function(c){k?h.push(c):c(a,b)}}(),b.bMoor={module:j,setTemplate:function(a,b){this.templates[a]=b},templates:{},require:function(){m.require.apply(m,arguments)},get:function(a,b){return l.exists(a,b)},settings:k,autoload:m,constructor:new g},function(){var b={};bMoor.constructor.singleton({name:"Resource",namespace:["bmoor","lib"],module:"Resource",onReady:function(a){var b,c=document.getElementsByTagName("script");bMoor.setTemplate=function(b,c){a.setTemplate(b,c)};for(b in bMoor.templates)a.setTemplate(b,bMoor.templates[b]);for(var d=0,e=c.length;e>d;d++){var f=c[d];f.id&&(f.src&&(a.__static.loadedScripts[f.src]=f.id),"text/html"==f.getAttribute("type")&&a.setTemplate(f.id,f.innerHTML))}},statics:{loadedScripts:{}},properties:{loadScriptSet:function(){var b=Array.prototype.slice.call(arguments,0),c=b.pop(),e=b.shift(),f=e,g=function(){a.getScript(e).done(c).fail(function(a,c,h){b.length?(e=b.shift(),g()):d("failed to load file : "+f+"\nError : "+h)})};g()},loadScript:function(b,c,e){var f,g=this;"string"==typeof b&&(b=[b]),f=(e||"")+b.shift(),a.getScript(f).done(function(){b.length?g.loadScript(b,c,e):c()}).fail(function(a,b,c){d("failed to load file : "+f+"\nError : "+c)})},loadStyle:function(b,c){var d,e,f,g=null;e=document.createElement("link"),e.setAttribute("href",b),e.setAttribute("rel","stylesheet"),e.setAttribute("type","text/css"),e.sheet?(f="sheet",d="cssRules",g=setInterval(function(){try{e[f]&&e[f][d]&&e[f][d].length&&(clearInterval(g),c())}catch(a){}},10)):a(e).bind("load",c),a("head").append(e)},loadImage:function(b,c){var d=new Image;"#"==b[0]&&(b=a(b)[0].src),d.onload=c,d.src=b},loadTemplate:function(d,e,f){var g,h=null,i=bMoor.templates;if(f===c&&"string"!=typeof e&&(f=e,e=null),"#"===d[0]&&(d=d.substring(1)),!i[d])if(b[e]){var j=loadedScript[e];i[j]?i[d]=i[j]:this.setTemplate(d,document.getElementById(j).innerHTML)}else if(null!==(g=document.getElementById(d)))this.setTemplate(d,g.innerHTML);else{if(null===e)throw"loadTemplate : "+d+" requested, and not found, while src is null";h=this,a.ajax(e,{success:function(a){h.setTemplate(a),f(i[d])}})}if(null===h){if(!f)return i[d];f(i[d])}return null},setTemplate:function(a,b){var c=bMoor.templates;switch(typeof b){case"string":c[a]=b.replace(/\s*<!\[CDATA\[\s*|\s*\]\]>\s*|[\r\n\t]/g,"");break;case"function":c[a]=b.toString().split(/\n/).slice(1,-1).join("\n")}}}},!0)}()}(jQuery,this),function(){bMoor.constructor.singleton({name:"Bouncer",namespace:["bmoor","lib"],module:"Schedule",construct:function(){this._stack=[],this._done=[],this._pauseAfter=null,this._lock=!1},properties:{runPause:30,runWindow:300,_setTime:function(){this._pauseAfter=(new Date).getTime()+this.runWindow},add:function(a){this._stack.push(a)},done:function(a){this._done.push(a)},_run:function(){if(this._lock=!1,this._stack.length)this.run();else if(this._done.length){for(;this._done.length;)this.add(this._done.shift());this.run()}else this._pauseAfter=null},run:function(){var a,b=this;this._stack.length&&!this._lock?(this._lock=!0,a=this._stack.shift(),0===this.runWindow?(a(),this._run()):(null===this._pauseAfter&&this._setTime(),a(),(new Date).getTime()>this._pauseAfter?setTimeout(function(){b._pauseAfter=null,b._run()},this.runPause):this._run())):this._run()}}})}(jQuery,this),function(){bMoor.constructor.singleton({name:"KeyboardTracker",namespace:["bmoor","lib"],onReady:function(a){$(document.body).on("keydown",function(b){a.activeKeys[b.which]=!0}),$(document.body).on("keyup",function(b){delete a.activeKeys[b.which]})},properties:{activeKeys:{},isDown:function(a){return this.activeKeys[a]}}})}(this),function(){bMoor.constructor.singleton({name:"MouseTracker",namespace:["bmoor","lib"],onReady:function(a){$(document.body).on("mousemove",function(b){a.x=b.pageX,a.y=b.pageY})}})}(this),function(){bMoor.constructor.singleton({name:"WaitFor",namespace:["bmoor","lib"],construct:function(){},require:{references:{"bMoor.module.Resource":["bmoor","lib","Resource"]}},module:"Wait",properties:{_waiting:0,_done:[],_return:function(){var a;for(this._waiting--;this._done.length&&this._waiting<1;)a=this._done.pop(),a()},done:function(a){this._waiting<1?a():this._done.unshift(a)},require:function(a,b){var c=this;return this._waiting++,bMoor.autoload.require(a,function(){b&&b(),c._return()}),this},loadScript:function(a,b){var c=this;return this._waiting++,bMoor.module.Resource.loadScript(a,function(){b&&b(),c._return()}),this},loadStyle:function(a,b){var c=this;return this.waiting++,bMoor.module.Resource.loadStyle(a,function(){b&&b(),c._return()}),this},loadImage:function(a,b){var c=this;return this._waiting++,bMoor.module.Resource.loadImage(a,function(){b&&b(),c._return()}),this},loadTemplate:function(a,b,c){var d=this;return this._waiting++,bMoor.module.Resource.loadTemplate(a,b,function(){c&&c(),d._return()}),this}}})}(jQuery,this);;;(function( global, undefined ){
+!function(a,b,c){"use strict";function d(a){console&&console.log&&(console.log(a),console.trace())}function e(){}function f(){this.args=arguments}function g(){}var h=document.getElementsByTagName("script"),i=h[h.length-1],j={},k={templator:["bmoor","templating","JQote"],templatorTag:"#",jsRoot:i.hasAttribute("root")?i.getAttribute("root"):i.getAttribute("src").match(/^(.*)\/b[Mm]oor(\.min)?\.js/)[1]};String.prototype.trim||(String.prototype.trim=function(){return this.replace(/^\s+|\s+$/g,"")});var l={parse:function(a){return a?"string"==typeof a?a.split("."):a.length?a.slice(0):a:[]},get:function(a,c){var d,e,f=b;if(a&&("string"==typeof a||a.length)){a=this.parse(a),c&&(d=a.length-1,e=a[d],a[d]=e.charAt(0).toLowerCase()+e.slice(1));for(var g=0;g<a.length;g++){var h=a[g];f[h]||(f[h]={}),f=f[h]}}return f},exists:function(a,c){var d,e,f=b;if(a){if("string"==typeof a||a.length){a=this.parse(a),c&&(d=a.length-1,e=a[d],a[d]=e.charAt(0).toLowerCase()+e.slice(1));for(var g=0;g<a.length;g++){var h=a[g];if(!f[h])return null;f=f[h]}return f}return a}return null}},m={requests:0,onReady:[]};!function(){var a={},b={};m.parseResource=function(a){var b=a.match(/^(.*)\/(js|src)/);return b?b[1]:a.match(/^[js|src]/)?null:null},m.reset=function(){b={".":{fullName:!1},">":this.parseResource(k.jsRoot),"/":k.jsRoot,jquery:{"/":k.jsRoot+"/jquery",".":{fullName:!0}}}},m.reset(),m.setRoot=function(a){b["/"]=a,b[">"]=this.parseResource(a)},m.setLibrary=function(a,d,e,f){var g=b,h=l.parse(a);for(e||(e={});h.length;){var i=h.shift();g[i]===c&&(g[i]={}),g=g[i]}g["/"]=d,g["."]=e,g["*"]=f===!0,g[">"]=this.parseResource(d)},m.delLibrary=function(a){for(var c=b,d=null,e=null,f=l.parse(a);f.length&&c;){var g=f.shift();c[g]?(d=c,e=g,c=c[e]):c=null}c&&delete d[e]},m.getLibrary=function(a,c){for(var d=b,e=b,f=l.parse(a),g=c?null:f.pop(),h=f.slice(0);f.length;){var i=f[0];if(!d[i])break;d=d[f.shift()],d["/"]&&(e=d,h=f.slice(0))}return e["*"]?{root:e["/"],path:[],name:g,settings:e["."],resource:e[">"]}:{root:e["/"],path:h,name:g,settings:e["."],resource:e[">"]}},m.loadSpace=function(b,f,g,h,i){function j(){i===c&&(i={}),h===c&&(h=[]),g.apply(i,h)}function k(a){var c=l.exists(b);!c||c instanceof e||c.prototype&&c.prototype.__defining?setTimeout(k,10):g?(clearTimeout(a),j()):clearTimeout(a)}var m;if(b=l.parse(b),"function"==typeof f?(i=h,h=g,g=f,f=b):f||(f=b),m=l.exists(b))m instanceof e?k():j();else{var n=this.getLibrary(f),o=n.root+(n.path.length?"/"+n.path.join("/"):"")+"/"+(n.settings.fullName?f.join("."):n.name),p=function(c){var e,f,g,h=a[o];for(e=setTimeout(function(){l.exists(b)||d("loaded file : "+c+"\n but no class : "+b.join("."))},5e3),f=0,g=h.length;g>f;f++)h[f](e);a[o]=!0};a[o]?a[o].push(k):"boolean"==typeof a[o]?k():(a[o]=[k],bMoor.module.Resource.loadScriptSet(o+".js",o+".min.js",p))}},m.done=function(a){0===this.requests?a():this.onReady.push(a)},m.require=function(a,b,c){function d(){var a,c,d,e,f=[];if(m--,0===m){for(k.requests--,m--,c=0,a=p,d=a?a.length:0;d>c;c++)f.push(l.get(a[c]));if(b.apply({},f),0===k.requests){for(;k.onReady.length;)e=k.onReady.shift(),e();k.onReady=[]}}}var e,f,g,h,i,j,k=this,m=1,n=null,o=null,p=null;for(a.substring?(o=p=[a],n={}):a.length?(o=p=a,n={}):(n=a.references?a.references:{},o=a.classes?a.classes:[],p=a.aliases?a.aliases:[]),this.requests++,i=0,h=o,j=h?h.length:0;j>i;i++)f=l.parse(h[i]),m++,this.loadSpace(f,d);for(g in n)f=l.parse(g),m++,this.loadSpace(f,n[g],d);if(a.scripts&&(m++,bMoor.module.Resource.loadScript(a.scripts,d,c?c+"/js/":"js/")),a.styles)for(g in a.styles)m++,e=a.styles[g],"/"!=e.charAt(0)&&(e=c?c+"/css/"+e:"css/"+e),bMoor.module.Resource.loadStyle(e,d);if(a.templates)for(g in a.templates)m++,e=a.templates[g],"/"!=e.charAt(0)&&(e=c?c+"/template/"+e:"template/"+e),bMoor.module.Resource.loadScript(e,d);d()}}(),function(){function c(a,b,c){var d=typeof c,e=b[a];"function"==d?b[a]=function(){var a,b=this._wrapped;return this._wrapped=e,a=c.apply(this,arguments),this._wrapped=b,a}:"string"==d&&(b[a]+=" "+c)}function d(a,c,d){var e=c.parent?l.get(c.parent):null,f=c.namespace?l.parse(c.namespace):[],g=c.namespace?l.get(f):b;if(e&&(e.prototype.__name||(e.prototype.__name=c.parent),a.extend(d,e),e.prototype.__onDefine))if(c.onDefine){var h=c.onDefine;c.onDefine=function(a,b,c,d){e.prototype.__onDefine.call(this,a,b,c,d),h.call(this,a,b,c,d)}}else c.onDefine=e.prototype.__onDefine;d.prototype.__construct=c.construct?c.construct:e?e.prototype.__construct:function(){},d.prototype.__defining=!0,g[c.name]=d,f.push(c.name),d.prototype.__class=f.join("."),d.prototype.__name=f.pop(),c.onDefine&&(d.prototype.__onDefine=c.onDefine),c.aliases&&a.alias(d,c.aliases),a.statics(d,c.statics),c.properties&&a.properties(d,c.properties)}var h=[],i=!1,k=0;g.prototype.define=function(c){function g(){var e,f=l.exists(c.parent);if(f&&f.prototype.__defining)setTimeout(g,10);else if(d(j,c,q),c.onDefine&&(e=c.onDefine.apply(q.prototype,[c,p,c.name,q])),e||(e=p[c.name]),c.onReady&&a(document).ready(function(){m.done(function(){c.onReady(e)})}),delete q.prototype.__defining,k--,0===k)for(;h.length;){var i=h.pop();i(a,b)}}var j=this,n=c.require,o=m.getLibrary(c.namespace,!0).resource,p=l.get(l.parse(c.namespace)),q=function(){i||this.__construct.apply(this,arguments[0]instanceof f?arguments[0].args:arguments)};if(k++,!c.name)throw"Need name for class";p[c.name]=new e,n?n.length&&(n={classes:n}):n={},c.parent&&(n.classes?n.classes.push(c.parent):n.classes=[c.parent]),c.aliases&&(n.aliases=c.aliases),m.require(n,g,o)},g.prototype.singleton=function(a){var b=a.onDefine?a.onDefine:function(){};a.onDefine=function(a,c,d,e){var f,g=new e,h=d.charAt(0).toLowerCase()+d.slice(1);return c[h]=g,b.apply(this,[a,c,d,e,g]),a.module&&(f=a.module,f=f.charAt(0).toUpperCase()+f.slice(1).toLowerCase(),j[f]=g),g},this.define(a)},g.prototype.factory=function(a){var b=a.onDefine?a.onDefine:function(){};a.onDefine=function(a,c,d,e){var f={},g=function(){return Array.prototype.push.call(arguments,e),a.factory.apply(f,arguments)};c[d.charAt(0).toLowerCase()+d.slice(1)]=g,b.apply(this,arguments)},this.define(a)},g.prototype.decorator=function(a){var b,d;a.properties||(a.properties={}),b=a.properties._decorate,d=a.construct,delete a.properties._decorate,delete a.construct,a.properties._decorate=function(a,e){var f;d&&(e?c("__construct",a,function(){this._wrapped&&this._wrapped.apply(this,arguments),d.apply(this,arguments)}):d.apply(a));for(f in this)"__construct"!==f&&"_decorate"!==f&&(a[f]?c(f,a,this[f]):a[f]=this[f]);return b&&b.call(a),a},this.singleton(a)},g.prototype.mutate=function(a,b){var c,d,e=a.onDefine?a.onDefine:function(){};if(a.decorators){for(d="string"==typeof a.decorators?d.split(","):a.decorators,a.require?a.require.length&&(a.require={classes:a.require}):a.require={},a.require.classes||(a.require.classes=[]),c=0;c<d.length;c++)a.require.classes.push(d[c]);a.onDefine=function(a,b,c,f){var g,h,i;for(e.apply(this,[a,b,c,f]),g=0,i=d,h=i.length;h>g;g++)l.get(i[g],!0)._decorate(this,!0);for(g in a.noOverride)this[g]=a.noOverride[g]}}b?this.singleton(a):this.define(a)},g.prototype.properties=function(a,b){for(var c in b)a.prototype[c]=b[c]},g.prototype.statics=function(b,c){b.prototype.__static?(b.prototype.__static={},a.extend(b.prototype.__static,c)):b.prototype.__static=c?c:{}},g.prototype.alias=function(a,b){for(var c in b){var d=b[c];a.prototype["__"+d]=l.get(c).prototype}},g.prototype.extend=function(a,b){i=!0,a.prototype=new b,a.prototype.constructor=a,a.prototype[b.prototype.__class]=b.prototype,i=!1},g.prototype.loaded=function(c){k?h.push(c):c(a,b)}}(),b.bMoor={module:j,setTemplate:function(a,b){this.templates[a]=b},templates:{},require:function(){m.require.apply(m,arguments)},get:function(a,b){return l.exists(a,b)},settings:k,autoload:m,constructor:new g},function(){var b={};bMoor.constructor.singleton({name:"Resource",namespace:["bmoor","lib"],module:"Resource",onReady:function(a){var b,c=document.getElementsByTagName("script");bMoor.setTemplate=function(b,c){a.setTemplate(b,c)};for(b in bMoor.templates)a.setTemplate(b,bMoor.templates[b]);for(var d=0,e=c.length;e>d;d++){var f=c[d];f.id&&(f.src&&(a.__static.loadedScripts[f.src]=f.id),"text/html"==f.getAttribute("type")&&a.setTemplate(f.id,f.innerHTML))}},statics:{loadedScripts:{}},properties:{loadScriptSet:function(){var b=Array.prototype.slice.call(arguments,0),c=b.pop(),e=b.shift(),f=e,g=function(){a.getScript(e).done(c).fail(function(a,c,h){b.length?(e=b.shift(),g()):d("failed to load file : "+f+"\nError : "+h)})};g()},loadScript:function(b,c,e){var f,g=this;"string"==typeof b&&(b=[b]),f=(e||"")+b.shift(),a.getScript(f).done(function(){b.length?g.loadScript(b,c,e):c()}).fail(function(a,b,c){d("failed to load file : "+f+"\nError : "+c)})},loadStyle:function(b,c){var d,e,f,g=null;e=document.createElement("link"),e.setAttribute("href",b),e.setAttribute("rel","stylesheet"),e.setAttribute("type","text/css"),e.sheet?(f="sheet",d="cssRules",g=setInterval(function(){try{e[f]&&e[f][d]&&e[f][d].length&&(clearInterval(g),c())}catch(a){}},10)):a(e).bind("load",c),a("head").append(e)},loadImage:function(b,c){var d=new Image;"#"==b[0]&&(b=a(b)[0].src),d.onload=c,d.src=b},loadTemplate:function(d,e,f){var g,h=null,i=bMoor.templates;if(f===c&&"string"!=typeof e&&(f=e,e=null),"#"===d[0]&&(d=d.substring(1)),!i[d])if(b[e]){var j=loadedScript[e];i[j]?i[d]=i[j]:this.setTemplate(d,document.getElementById(j).innerHTML)}else if(null!==(g=document.getElementById(d)))this.setTemplate(d,g.innerHTML);else{if(null===e)throw"loadTemplate : "+d+" requested, and not found, while src is null";h=this,a.ajax(e,{success:function(a){h.setTemplate(a),f(i[d])}})}if(null===h){if(!f)return i[d];f(i[d])}return null},setTemplate:function(a,b){var c=bMoor.templates;switch(typeof b){case"string":c[a]=b.replace(/\s*<!\[CDATA\[\s*|\s*\]\]>\s*|[\r\n\t]/g,"");break;case"function":c[a]=b.toString().split(/\n/).slice(1,-1).join("\n")}}}},!0)}()}(jQuery,this),function(){bMoor.constructor.singleton({name:"Bouncer",namespace:["bmoor","lib"],module:"Schedule",construct:function(){this._stack=[],this._done=[],this._pauseAfter=null,this._lock=!1},properties:{runPause:30,runWindow:300,_setTime:function(){this._pauseAfter=(new Date).getTime()+this.runWindow},add:function(a){this._stack.push(a)},done:function(a){this._done.push(a)},_run:function(){if(this._lock=!1,this._stack.length)this.run();else if(this._done.length){for(;this._done.length;)this.add(this._done.shift());this.run()}else this._pauseAfter=null},run:function(){var a,b=this;this._stack.length&&!this._lock?(this._lock=!0,a=this._stack.shift(),0===this.runWindow?(a(),this._run()):(null===this._pauseAfter&&this._setTime(),a(),(new Date).getTime()>this._pauseAfter?setTimeout(function(){b._pauseAfter=null,b._run()},this.runPause):this._run())):this._run()}}})}(jQuery,this),function(){bMoor.constructor.singleton({name:"KeyboardTracker",namespace:["bmoor","lib"],onReady:function(a){$(document.body).on("keydown",function(b){a.activeKeys[b.which]=!0}),$(document.body).on("keyup",function(b){delete a.activeKeys[b.which]})},properties:{activeKeys:{},isDown:function(a){return this.activeKeys[a]}}})}(this),function(){bMoor.constructor.singleton({name:"MouseTracker",namespace:["bmoor","lib"],onReady:function(a){$(document.body).on("mousemove",function(b){a.x=b.pageX,a.y=b.pageY})}})}(this),function(){bMoor.constructor.singleton({name:"WaitFor",namespace:["bmoor","lib"],construct:function(){},require:{references:{"bMoor.module.Resource":["bmoor","lib","Resource"]}},module:"Wait",properties:{_waiting:0,_done:[],_return:function(){var a;for(this._waiting--;this._done.length&&this._waiting<1;)a=this._done.pop(),a()},done:function(a){this._waiting<1?a():this._done.unshift(a)},require:function(a,b){var c=this;return this._waiting++,bMoor.autoload.require(a,function(){b&&b(),c._return()}),this},loadScript:function(a,b){var c=this;return this._waiting++,bMoor.module.Resource.loadScript(a,function(){b&&b(),c._return()}),this},loadStyle:function(a,b){var c=this;return this.waiting++,bMoor.module.Resource.loadStyle(a,function(){b&&b(),c._return()}),this},loadImage:function(a,b){var c=this;return this._waiting++,bMoor.module.Resource.loadImage(a,function(){b&&b(),c._return()}),this},loadTemplate:function(a,b,c){var d=this;return this._waiting++,bMoor.module.Resource.loadTemplate(a,b,function(){c&&c(),d._return()}),this}}})}(jQuery,this);;;(function( $, global, undefined ){
+
+bMoor.constructor.define({
+	name : 'Abstract',
+	namespace : ['snap','model'],
+	construct : function( data ){
+		this._initModel( data );
+		this._initDefaults();
+	},
+	properties : {
+		toObject : function(){
+			var 
+				key,
+				rtn = {};
+
+			for( key in this ) {
+				if ( this.hasOwnProperty(key) && typeof(this[key]) != 'function' ){
+					rtn[key] = this[key];
+				}
+			}
+
+			return rtn;
+		},
+		toJson : function(){
+			return JSON.stringify( this.toObject() );
+		},
+		set : function( key, val ){
+			if ( this._validations[key] ){
+				if ( this._validations[key](val) ){
+					this[key] = val;
+				}
+			}else{
+				this[key] = val;
+			}
+		},
+		_validations : {},
+		_initModel : function( data ){
+			var key;
+
+			for( key in data ) if ( data.hasOwnProperty(key) ){
+				this.set( key, data[key] );
+			}
+
+		},
+		_initDefaults : function(){
+			var 
+				key,
+				defaults = this._defaults;
+
+			for( key in defaults ){
+				if( !this[key] ){
+					this.set( key, defaults[key] );
+				}
+			}
+		},
+		_defaults : {}
+	}
+});
+
+}( jQuery, this ));
+;;(function( global, undefined ){
 	var snapid = 0;
 
 	bMoor.constructor.define({
@@ -92,6 +152,7 @@
 					key;
 
 				changes = this._clean();
+
 				if ( this._needNotify(changes) ){
 					for( key in settings ){
 						changes[ key ] = settings[ key ];
@@ -110,13 +171,16 @@
 				
 				return this;
 			},
+			_cleanse : function(){
+				return this.model;
+			},
 			_clean : function(){
 				var
 					list,
 					i,
 					c,
 					val,
-					model = this.model,
+					model = this._cleanse(),
 					changes = {},
 					cleaned = this.cleaned;
 				
@@ -594,8 +658,18 @@ bMoor.constructor.singleton({
 						i,
 						renders,
 						node = bMoor.get( create ),
-						el = new node( element, {}, true );
+						el;
 					
+					if ( !node ){
+						throw 'Bootstrap tried to find: '+create;
+					}
+
+					try{
+						el = new node( element, {}, true );
+					}catch ( ex ){
+						throw 'Bootstrap tried to create: '+create;
+					}
+
 					for( i = 0; i < visages.length; i++ ){
 						bMoor.get( visages[i], true )._decorate( el );
 					}
@@ -645,7 +719,17 @@ bMoor.constructor.singleton({
 					var 
 						i,
 						controller = bMoor.get( create ),
+						el;
+
+					if ( !controller ){
+						throw 'Bootstrap tried to find: '+create;
+					}
+
+					try{
 						el = new controller( element, {}, args, true );
+					}catch (ex) {
+						throw 'Bootstrap tried to create: '+create;
+					}
 
 					for( i = 0; i < stints.length; i++ ){
 						bMoor.get( stints[i], true )._decorate( el );
@@ -753,66 +837,71 @@ bMoor.constructor.singleton({
 			this._listeners = [];
 			this._data = {};
 		},
+		// TODO : revisit this to simplify the logic...
 		properties : {
 			// map : my var -> stream var, or a function
 			// reverse : stream var -> my var, or a function
-			bind : function( observer, map, reverse ){
+			pushing : function( observer, map ){
 				var 
+					func,
 					key,
 					dis = this;
 
 				// registers anything going from the observer into the stream
-				if ( map ){
-					if ( typeof(map) == 'function' ){
-						// this is impossible, they really meant reverse
-						reverse = map;
-					}else{
-						// flip the map inside out
-						if ( !reverse ){
-							reverse = {};
-							for( key in map ){
-								reverse[ map[key] ] = key;
+				if ( typeof(map) == 'object' ){
+					func = function( alterations ){
+						var key;
+
+						for( key in alterations ) if ( alterations.hasOwnProperty(key) ){
+							if ( map[key] ) {
+								dis.push( map[key], this.model[key] );
 							}
 						}
-
-						observer.bind(function( alterations ){
-							var key;
-
-							for( key in alterations ) if ( alterations.hasOwnProperty(key) ){
-								if ( map[key] ) {
-									dis.push( map[key], this.model[key] );
-								}
-							}
-						});
-					}
-				}else{
-					observer.bind(function( alterations ){
+					};
+				}else if ( map === true ){
+					func = function( alterations ){
 						var key;
 
 						for( key in alterations ) if ( alterations.hasOwnProperty(key) ){
 							dis.push( key, this.model[key] );
 						}
-					});
+					};
 				}
-				
+
+				if ( func ){
+					observer.bind( func );
+					this.push( observer.model );
+				}
+			},
+			pulling : function( observer, map ){
+				var 
+					key,
+					type = typeof(map),
+					func;
+
 				// registers anything going from the stream into the observer
-				if ( reverse ){
-					if ( typeof(reverse) == 'function' ){
-						this._listeners.push( reverse );
-					}else{
-						this._listeners.push(function( key, val ){
-							var field = reverse[ key ];
-							
-							if ( field ) {
-								observer.model[ field ] = val;
-							}
-						});
-					}
+				if ( type === 'object' ) {
+					func = function( key, val ){
+						var field = map[ key ];
+						
+						if ( field ) {
+							observer.model[ field ] = val;
+						}
+					};
+				}else if ( type !== 'function' ) {
+					func = function( key, val ){
+						observer.model[ key ] = val;
+					};
 				}else{
-					this._listeners.push(function( key, val ){
-						observer.model[key] = val;
-					});
+					func = map;
 				}
+
+				for( key in this._data ){
+					console.log( key, this._data[key] );
+					func( key, this._data[key] );
+				}
+
+				this._listeners.push( func );
 			},
 			pull : function(){
 				var 
@@ -848,91 +937,73 @@ bMoor.constructor.singleton({
 bMoor.constructor.define({
 	name : 'Abstract',
 	namespace : ['snap','service'],
+	require : [
+		['snap','model','Abstract']
+	],
 	construct : function(){
-		if ( typeof(this._get) == 'string' ){
-			this._get = this._parseService( this._get );
-		}
+		var instance;
 
-		if ( typeof(this._update) == 'string' ){
-			this._update = this._parseService( this._update );
-		}
+		if ( this.instanceClass !== null && typeof(this.instanceClass) != 'function' ){
+			instance = bMoor.get( this.instanceClass );
 
-		if ( typeof(this._remove) == 'string' ){
-			this._remove = this._parseService( this._remove );
-		}
-
-		if ( typeof(this._create) == 'string' ){
-			this._create = this._parseService( this._create );
+			if ( !instance ){
+				throw this.__class+' could not find '+this.instanceClass;
+			}else{
+				this.instanceClass = instance;
+			}
 		}
 	},
 	properties : {
-		_get    : null,
-		_update : null,
-		_remove : null,
-		_create : null,
-		_parseService : function( service ){
-			return new Function( 'model', 'return "' + service.replace( /:([^\/?&]+)/g, '"+model.$1+"' ) + '";' );
+		instanceClass : null,
+		parseService : function( url ){
+			// make a url like www.something.com/:group/:id dynamic
+			return new Function( 'model', 
+				'return "' + url.replace( /:([^\/?&]+)/g, '"+model.$1+"' ) + '";' 
+			);
 		},
-		_ajax : function( url, controller, observer, data, cb ){
-			var dis = this;
+		_get : function(){
+			return [];
+		},
+		get : function(){
+			var 
+				i,
+				c,
+				instanceClass = this.instanceClass,
+				data;
 
-			$.ajax( url, {
-				data : data,
-				dataType : 'json',
-				success : function( json ){
-					if ( json ){
-						if ( json.messages ){
-							dis._setMessages( controller, json.messages ); // new array will be detected
-						}
+			if ( !this.data ){
+				data = this._get();
 
-						if ( json.errors ){
-							dis._setErrors( controller, json.errors ); // new array will be detected
-						}
-
-						if ( json.success && cb ){
-							cb.call( controller, observer, json );
-						}
+				if ( instanceClass ){
+					for( i = 0, c = data.length; i < c; i++ ){
+						data[i] = new instanceClass( data[i] );
 					}
 				}
-			});
-		},
-		_setMessages : function( controller, messages ){
-			var 
-				model = controller.root.observer.model,
-				$messages = model.$messages;
 
-			if ( $messages ){
-				model.$messages = $messages.concat( messages );
+			this.data = data;
+			}
+
+			return this.data;
+		},
+		push : function( data ){
+			var
+				instanceClass = this.instanceClass;
+
+			if ( instanceClass ){
+				this.data.push( new instanceClass(data) );
+			}else{
+				this.data.push( data );
 			}
 		},
-		_setErrors : function( controller, errors ){
-			var 
-				model = controller.root.observer.model,
-				$errors = model.$errors;
+		wrap : function( data ){
+			var
+				instanceClass = this.instanceClass;
 
-			if ( $errors ){
-				model.$errors = $errors.concat( errors );
+			if ( instanceClass ){
+				return new instanceClass( data );
+			}else{
+				return data;
 			}
-		},
-		create : function( controller, observer, cb ){
-			var data = observer.simplify();
-
-			this._ajax( this._create(data), controller, observer, data, cb );
-		},
-		update : function( controller, observer, cb ){
-			var data = observer.simplify();
-
-			this._ajax( this._update(data), controller, observer, data, cb );
-		},
-		remove : function( controller, observer, cb ){
-			var data = observer.simplify();
-
-			this._ajax( this._remove(data), controller, observer, data, cb );
-		},
-		get : function( controller, observer, cb ){
-			var data = observer.simplify();
-
-			this._ajax( this._get(data), controller, observer, data, cb );
 		}
 	}
 });
@@ -1316,6 +1387,10 @@ bMoor.constructor.define({
 				controller,
 				attr;
 
+			if ( !element ){
+				throw this.__class+' was never passed an element';
+			}
+
 			this['snap.Core']._initElement.call( this, element );
 
 			// install a default controller
@@ -1365,6 +1440,7 @@ bMoor.constructor.define({
 			
 			if ( !this.element.controller ){
 				attr = this._getAttribute( 'observe' );
+				
 				if ( attr ){
 					scope = attr.split('.');
 					info = this._unwrapVar( model, scope, true );
@@ -1776,6 +1852,7 @@ bMoor.constructor.define({
 				if ( removals ){
 					for( i in removals ){
 						row = removals[ i ];
+						
 						// row is a Map here
 						if ( typeof(row) == 'object' ){
 							// this means it was removed, otherwise it would be a number
@@ -1795,9 +1872,14 @@ bMoor.constructor.define({
 				}
 				
 				moves = alterations.moves;
-				
+				console.log( data );
 				for( i = 0, c = data.length; i < c; i++ ){
+					console.log( i, data[i]._.snapid );
 					if ( moves[i] ){
+						console.log( i, moves[i]._.snapid, moves[i], data[i-1], data[i-1] ? data[i-1]._.snapid : null );
+						// data is the stack of objects
+						// moves is a hash of the objects with their new position
+						// moves get inserted after the data
 						this.insert( moves[i], template, data[i-1] );
 					}
 				}
@@ -1866,37 +1948,39 @@ bMoor.constructor.define({
 				nodes,
 				node,
 				next,
-				rowContent,
+				prevRow,
+				thisRow,
 				els,
 				element,
 				observer = model._;
 
-			// TODO : rows -> nodes
-			if ( previous && (rowContent = this.rows[previous._.snapid]) ){
-				previous = rowContent[ rowContent.length - 1 ];
-			}else{
-				previous = this.mountPoint.above;
-			}
+			thisRow = this.rows[ model._.snapid ];
 
-			rowContent = this.rows[ model._.snapid ];
-
-			if ( !rowContent ){
+			if ( !thisRow ){
 				els = this._makeChildren( model, template );
 
-				rowContent = this.rows[ model._.snapid ] = [];
+				thisRow = this.rows[ model._.snapid ] = [];
 
 				element = els.firstChild;
 
 				while( element ){
 					this._pushObserver( element, observer );
-					rowContent.push( element );
+					thisRow.push( element );
 					
 					element = element.nextSibling;
 				}
 			}
 
-			for( i = 0, c = rowContent.length; i < c; i++ ){
-				element = rowContent[i];
+			// TODO : rows -> nodes
+			if ( previous && (prevRow = this.rows[previous._.snapid]) ){
+				previous = prevRow[ prevRow.length - 1 ];
+				thisRow.previous = prevRow;
+			}else{
+				previous = this.mountPoint.above;
+			}
+
+			for( i = 0, c = thisRow.length; i < c; i++ ){
+				element = thisRow[i];
 
 				this._insert( element, previous );
 				this._finalizeElement( element );
@@ -1906,6 +1990,7 @@ bMoor.constructor.define({
 
 			return els;
 		},
+		// TODO : a lot of the mountpoint is completely pointless
 		_insert : function( element, mount ){
 			if ( element.nodeType != 3 ){
 				if ( mount ){
@@ -2544,13 +2629,12 @@ bMoor.constructor.define({
 			service,
 			controller;
 
-		// set instreams or outstreams to be mapped
-		this._inStreams = settings.inStreams || {};
-		this._outStreams = settings.outStreams || {};
-
 		if ( settings.controller ){
 			controller = settings.controller;
 
+			// set instreams or outstreams to be mapped
+			this._streamPull = controller.streamPull || {};
+			this._streamPush = controller.streamPush || {};
 
 			if ( !controller.className ){
 				controller.className = 'snap-controller';
@@ -2602,6 +2686,9 @@ bMoor.constructor.define({
 					}
 				}
 			});
+		}else{
+			this._streamPull = {};
+			this._streamPush = {};
 		}
 	},
 	construct : function( element, attributes, args, delay ){
@@ -2619,7 +2706,7 @@ bMoor.constructor.define({
 			var 
 				dis = this,
 				derp = function( func ){
-					snap.lib.stream( stream ).bind( dis.observer, {}, function(){
+					snap.lib.stream( stream ).pulling( dis.observer, function(){
 						func.apply( dis, arguments ); 
 					});
 				};
@@ -2636,15 +2723,15 @@ bMoor.constructor.define({
 			this._pushObserver( this.element, this.observer );
 
 			// jsHint is giving me an error for declaring it higher...
-			for( var stream in this._inStreams ){
-				snap.lib.stream( stream ).bind( this.observer, this._inStreams[stream], this._outStreams[stream] );
+			for( var stream in this._streamPush ){
+				snap.lib.stream( stream ).pushing( this.observer, this._streamPush[stream] );
 			}
 
-			for( stream in this._outStreams ) if ( !this._inStreams[stream] ){
-				if ( typeof(this._outStreams[stream]) == 'function' ){
-					derp( dis._outStreams[stream] );
+			for( stream in this._streamPull ){
+				if ( typeof(this._streamPull[stream]) == 'function' ){
+					derp( this._streamPull[stream] );
 				}else{
-					snap.lib.stream( stream ).bind( this.observer, {}, this._outStreams[stream] );
+					snap.lib.stream( stream ).pulling( this.observer, this._streamPull[stream] );
 				}
 			}
 			

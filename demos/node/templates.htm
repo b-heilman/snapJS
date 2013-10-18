@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<script src="../../external/jquery.min.js"></script>
+<script src="../../external/bmoor.min.js" root='../../src'></script>
+
+<script src="../../src/snap/templating/Decorator.js"></script>
+<script src="../../src/snap/node/View.js"></script>
+<script src="../../src/snap/Core.js"></script>
+<script src="../../src/snap/node/View.js"></script>
+
+</head>
+<body>
+	
+<script>
+(function( global ){
+	bMoor.constructor.define({
+		name : 'Controller',
+		namespace : ['test'],
+		parent : ['snap','controller','Abstract'],
+		properties : {
+			_model : function( parentModel ){ 
+				return { 
+					foo : 'foo', 
+					bar : {
+						uh : 'bar'
+					}
+				};
+			}
+		}
+	});
+
+	bMoor.constructor.define({
+		name : 'View',
+		namespace : ['test'],
+		parent : ['snap','node','View'],
+		properties : {
+			defaultTemplate : 'template',
+			templates : {
+				'template' : function(){/*
+<b><#= this.foo #></b>
+<span snap-node="snap.node.View" snap-template="template2" snap-scope="bar"></span>
+				*/},
+				'template2' : function(){/*
+<i><#= this.uh #></i>
+				*/}
+			}
+		}
+	});
+}( this ));
+</script>
+<div snap-controller="test.Controller">
+	<span snap-node='test.View'></span>
+</div>
+</script>
+</body>
+</html>

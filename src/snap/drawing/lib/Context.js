@@ -2,7 +2,7 @@
 
 bMoor.constructor.define({
 	name      : 'Context',
-	namespace : ['bmoor','drawing'],
+	namespace : ['snap','drawing','lib'],
 	construct: function Context( canvas, ratio ){
 		var ctx;
 		
