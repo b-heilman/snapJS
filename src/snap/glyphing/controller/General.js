@@ -24,7 +24,7 @@ bMoor.constructor.define({
 					active.active = false;
 					glyphs.active = null;
 				}
-			}
+			};
 
 			return glyphs;
 		}

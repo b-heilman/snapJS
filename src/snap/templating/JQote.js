@@ -19,7 +19,7 @@ bMoor.constructor.mutate({
 		},
 		prepare : function( content ){
 			var type = typeof( content );
-			console.log( '->', content );
+			
 			if ( type == 'string' ){
 				return $.jqotec( content );
 			}else if ( type == 'function' ){

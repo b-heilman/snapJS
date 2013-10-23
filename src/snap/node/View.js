@@ -34,7 +34,6 @@ bMoor.constructor.define({
 				if ( node.templates && node.templates[template] ){
 					return node.templates[ template ];
 				}else{
-					console.log( node );
 					el = this._findElementWithProperty( 'node',el.parentNode );
 				}
 			}
@@ -44,7 +43,7 @@ bMoor.constructor.define({
 				t,
 				template;
 				 
-			if ( template = this._getAttribute('template') ){
+			if ( (template = this._getAttribute('template')) ){
 				if ( template.charAt(0) == '>' ){
 					this.watchTemplateVar = template.substring(1);
 					template = this._unwrapVar( model, template.substring(1) );
@@ -55,12 +54,16 @@ bMoor.constructor.define({
 				// see if it is a node defined template, otherwise it might be global
 				if ( template ){
 					return this.findTemplate( template ) || bMoor.module.Templator.prepare( template );
+				}else{
+					throw this.__class + " tried to generate template from attribute, but failed";
 				}
-			} else if ( this.defaultTemplate 
-					&& (template = this.findTemplate(this.defaultTemplate))
-					&& template.isTemplate ){
-				return template;
-			} 
+			} else if ( this.defaultTemplate ){
+				if ( (template = this.findTemplate(this.defaultTemplate)) && template.isTemplate ){
+					return template;
+				}else{
+					throw this.__class + " tried to generate template from defaultTemplate, but failed";
+				}
+			}
 
 			return null;
 		},

@@ -1,21 +1,17 @@
 ;(function( $, global, undefined ){
+
 bMoor.constructor.define({
 	name : 'Glyph',
 	namespace : ['snap','glyphing','node'],
 	parent : ['snap','node','View'],
-	node : {
-		className : 'glyphing-glyph',
-		actions : {
-			'mouseenter' : function( event, node ){
-				node.$.addClass('glyph-active');
-			},
-			'mouseleave' : function( event, node ){
-				node.$.removeClass('glyph-active');
-			}
-		}
-	},
 	properties : {
-		defaultTemplate : 'glyphing-glyph-insert',
+		defaultTemplate : 'default',
+		defaultController : ['snap','glyphing','controller','Glyph'],
+		templates : {
+			'default' : function(){/*
+<div style="width: 100%; height: 100%; border: 1px solid red;"></div>
+			*/}
+		},
 		_initElement : function( element ){
 			element.style.position = 'absolute';
 
@@ -34,9 +30,7 @@ bMoor.constructor.define({
 			return model;
 		},
 		_onAlteration : function( model, alterations ){
-			if ( model.remove ){
-				this.$.remove();
-			}else if ( this.active !== model.active ){
+			if ( this.active !== model.active ){
 				if ( model.active ){
 					this.$.addClass('active-glyph');
 				}else{
@@ -71,9 +65,5 @@ bMoor.constructor.define({
 		}
 	}
 });
-
-bMoor.setTemplate( 'glyphing-glyph-insert', function(){/*
-<div style="width: 100%; height: 100%; border: 1px solid red;"></div>
-*/});
 
 }( jQuery, this ));

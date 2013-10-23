@@ -25,7 +25,16 @@
 					foo : 'foo', 
 					bar : {
 						uh : 'bar'
-					}
+					},
+					list : [
+						{
+							foo : 'eins',
+							bar : 'zwei'
+						},{
+							foo : 'this',
+							bar : 'that'
+						}
+					]
 				};
 			}
 		}
@@ -48,11 +57,41 @@
 			}
 		}
 	});
+
+	bMoor.constructor.define({
+		name : 'View2',
+		namespace : ['test'],
+		parent : ['test','View']
+	});
+
+	bMoor.constructor.define({
+		name : 'List',
+		namespace : ['test'],
+		parent : ['snap','node','List'],
+		properties : {
+			defaultTemplate : 'template',
+			templates : {
+				'template' : function(){/*
+<li><b><#= this.foo #></b><i><#= this.bar #></i></li>
+				*/}
+			}
+		}
+	});
 }( this ));
 </script>
 <div snap-controller="test.Controller">
 	<span snap-node='test.View'></span>
+	<span snap-node='test.View2'></span>
+	<ul snap-node="test.List" snap-scope="list"></ul>
+	<ul snap-node="snap.node.List" snap-scope="list" snap-template="list1"></ul>
 </div>
+
+<script type="text/html" id="list1">
+<![CDATA[
+	<li><#= this.foo #> - <#= this.bar #></li>
+]]>
+</script>
+
 </script>
 </body>
 </html>

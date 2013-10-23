@@ -86,7 +86,6 @@ bMoor.constructor.define({
 
 							for( i = 0, c = rows.length; i < c; i++ ){
 								r = rows[i];
-								
 								if ( r.parentNode ){
 									r.parentNode.removeChild( r );
 								}
@@ -98,11 +97,8 @@ bMoor.constructor.define({
 				}
 				
 				moves = alterations.moves;
-				console.log( data );
 				for( i = 0, c = data.length; i < c; i++ ){
-					console.log( i, data[i]._.snapid );
 					if ( moves[i] ){
-						console.log( i, moves[i]._.snapid, moves[i], data[i-1], data[i-1] ? data[i-1]._.snapid : null );
 						// data is the stack of objects
 						// moves is a hash of the objects with their new position
 						// moves get inserted after the data
@@ -210,7 +206,7 @@ bMoor.constructor.define({
 
 				this._insert( element, previous );
 				this._finalizeElement( element );
-
+				
 				previous = element;
 			}
 

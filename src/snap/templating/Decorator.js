@@ -18,10 +18,14 @@ bMoor.constructor.decorator({
 			
 			if ( type == 'string' ){
 				if ( raw ){
-					proto = this._wrapped( id );
-					proto.isTemplate = true;
+					if ( id.isTemplate ){
+						return id;
+					}else{						
+						proto = this._wrapped( id );
+						proto.isTemplate = true;
 
-					return proto;
+						return proto;
+					}
 				}else{
 					if ( !this.prepared[id] ){
 						proto = this._wrapped( bMoor.module.Resource.loadTemplate(id) );
@@ -34,7 +38,7 @@ bMoor.constructor.decorator({
 				}
 			}else if ( type == 'function' ){
 				// TODO : more tests, but for now assume function is a template
-				return content;
+				return id;
 			}
 		}
 	}

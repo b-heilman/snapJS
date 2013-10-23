@@ -32,7 +32,7 @@ bMoor.constructor.define({
 				if ( controller.singleClass ){
 					this.baseClass = controller.className;
 				}else{
-					this.baseClass += ' ' + controller.className;
+					this.baseClass = controller.className+ ' ' + this.baseClass;
 				}
 			}else{
 				this.baseClass = controller.className;
@@ -68,7 +68,14 @@ bMoor.constructor.define({
 								root = $(this).closest( className )[0];
 							}
 
-							return root.controller[ func ]( event, this, root.observer, root.node, share );
+							/**
+							* event : the event triggered
+							* element : the element that was targeted
+							* observer : the closest observer to the event
+							* node : the node affiliated with the controller
+							* share : a static variable to be share between all instances of this class
+							**/
+							return root.controller[ func ]( event, this, observerEl.observer, root.node, share );
 						});
 					};
 
@@ -85,7 +92,7 @@ bMoor.constructor.define({
 				}
 
 				for( action in controller.globals ){
-					global( action, controllers.globals[action] );
+					global( action, controller.globals[action] );
 				}
 			});
 		}else{

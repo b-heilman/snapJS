@@ -8,17 +8,18 @@ bMoor.constructor.mutate({
 		['snap','node','Form']
 	],
 	properties : {
-		defaultTemplate : 'glyphing-form-insert'
-	}
-});
-
-bMoor.setTemplate( 'glyphing-form-insert', function(){/*
+		defaultTemplate : 'default',
+		templates : {
+			'default' : function(){/*
 <label>Top : <input name='top'/></label>
 <label>Left : <input name='left'/></label>
 <label>Width : <input name='width'/></label>
 <label>Height : <input name='height'/></label>
 <label>Opacity : <input name='opacity'/></label>
 <label>Angle : <input name='angle'/></label>
-*/} );
+			*/}
+		}
+	}
+});
 
 }( jQuery, this ));

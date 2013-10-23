@@ -10,12 +10,6 @@
 - General tests
 
 - allow a way for an objec to map a specific variable change to a specific action
-- create a Model type, to be used by streams to auto format / populate data
-- allow 'defaultTemplate' to be a string or a template definition via a function define
 
 Bugs
 - mutated classes can not be extended
-
-Questions
-- Should I move all events to the controller?
-- Events should be mapped to a property of the controller and not be their own function, allows for better inheretance support
