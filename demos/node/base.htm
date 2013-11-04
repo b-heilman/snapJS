@@ -23,6 +23,15 @@
 	
 <script>
 (function( global ){
+	var listData = [
+		{x:'eins', heading:'derp 1'},
+		{x:'zwei', heading:'derp 2'},
+		{x:'drei', heading:'derp 3'},
+		{x:'1', heading:'derp 4'},
+		{x:'2', heading:'derp 5'},
+		{x:'3', heading:'derp 6'}
+	];
+
 	bMoor.constructor.define({
 		name : 'Controller',
 		namespace : ['test'],
@@ -38,22 +47,28 @@
 				return { 
 					foo : 'foot', 
 					bar : { uh:'yay' }, 
-					list: [
-						{x:'eins'},
-						{x:'zwei'},
-						{x:'drei'}
-					]
+					list: listData
 				};
 			}
 		}
 	});
+
+	setTimeout( function(){
+		var t = listData.splice( 4, 1 );
+		console.log( t );
+		listData.unshift( t[0] );
+	}, 1000 );
 }( this ));
 </script>
 <div snap-controller="test.Controller">
+	<div snap-node="snap.node.List" snap-template="list2"  snap-scope="list"></div>
 	<ul snap-node="snap.node.List" snap-template="list1"  snap-scope="list"></ul>
-	<ul snap-node="snap.node.List" snap-template="list1"  snap-scope="list" snap-mountBelow='true'>
-		<li mountBelow>This is a pre existing thing</li>
-		<li>This should be the footer</li>
+	<ul snap-node="snap.node.List" snap-template="list1"  snap-scope="list">
+		<li mountAbove>All content should be above</li>
+	</ul>
+	<ul snap-node="snap.node.List" snap-template="list1"  snap-scope="list">
+		<li mountBelow>This is the top</li>
+		<li>This is the bottom</li>
 	</ul>
 	<div snap-node="snap.node.View" snap-template="template1"> Loading... </div>
 </div>
@@ -71,6 +86,12 @@
 <script type="text/html" id="list1">
 <![CDATA[
 	<li><i><#= this.x #></i></li>
+]]>
+</script>
+<script type="text/html" id="list2">
+<![CDATA[
+	<i style="display: block;"><#= this.heading #></i>
+	<b style="display: block;"><#= this.x #></i>
 ]]>
 </script>
 </body>

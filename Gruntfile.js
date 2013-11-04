@@ -62,6 +62,12 @@ module.exports = function(grunt) {
 				evil : true
 			},
 			all : ['src/snap/Core.js','src/snap/**/*.js']
+		},
+		jasmine : {
+			src : ['external/jquery.min.js','build/snap.min.js'],
+			options : {
+				specs : 'spec/**/*.js'
+			}
 		}
   	});
 
@@ -69,6 +75,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
+	grunt.loadNpmTasks('grunt-contrib-jasmine');
 
 	// Default task(s).
 	grunt.registerTask('default', ['jshint:all','concat','uglify']);

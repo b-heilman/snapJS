@@ -78,7 +78,6 @@
 				}
 
 				for( key in this._data ){
-					console.log( key, this._data[key] );
 					func( key, this._data[key] );
 				}
 

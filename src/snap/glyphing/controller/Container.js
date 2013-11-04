@@ -11,7 +11,6 @@ bMoor.constructor.define({
 		},
 		actions : {
 			'mousedown' : {
-				'.glyphing-glyph' : 'activate',
 				'' : 'creation'
 			}
 		}
@@ -54,12 +53,6 @@ bMoor.constructor.define({
 					event.preventDefault();
 				}
 			}
-		},
-		activate : function( event, element, observer ){
-			observer.model.activate();
-			
-			event.stopPropagation();
-			event.preventDefault();
 		},
 		creation : function( event, element, observer, node ){
 			var 

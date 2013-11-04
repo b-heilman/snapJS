@@ -11,5 +11,12 @@
 
 - allow a way for an objec to map a specific variable change to a specific action
 
+- have the templates return back matched variables, have this passed to the observer to save processing.  Have views go off of this data as default.
+
+- remove all of the _ from the different functions.  They are no longer needed besides on models.
+
+- sync all maps and collections so they run off the same interval, reduce overhead
+
 Bugs
 - mutated classes can not be extended
+- finalizeContent seems to be getting called early

@@ -68,11 +68,12 @@ bMoor.constructor.define({
 			$el = this['snap.node.Basic']._initElement.call( this, element );
 			
 			this.ctx = new snap.drawing.lib.Context( element, 3 );
-			
+
 			element.style.cssText += '-moz-user-select: none; -khtml-user-select: none; -webkit-user-select: none; user-select: none;';
 			element.setAttribute('unselectable', 'on');
 			element.onselectstart = function() { if (dragging) return false; };
 
+			console.log( 'sketch' );
 			return $el;
 		},
 		save : function(){

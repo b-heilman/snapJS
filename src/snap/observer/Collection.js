@@ -1,4 +1,4 @@
-;(function( global, undefined ){
+;(function( $, global, undefined ){
 	// TODO : allow traits, so I can pull in functionality from Model.js
 	bMoor.constructor.mutate({
 		name : 'Collection',
@@ -12,52 +12,79 @@
 
 			this.removals = [];
 
-			// TODO : is this the best way to do this?
-			model.remove = function( obj ){
+			// Need to inject so we can observe removals
+			model.pop = function(){
+				var t = Array.prototype.pop.call( this );
+
+				if ( t.$markRemoval === undefined ){
+					t.$markRemoval = dis.removals.length;
+				}
+
+				dis.removals.push( t );
+
+				return t;
+			};
+
+			model.shift = function(){
+				var t = Array.prototype.shift.call( this );
+
+				if ( t.$markRemoval === undefined ){
+					t.$markRemoval = dis.removals.length;
+				}
+
+				dis.removals.push( t );
+
+				return t;
+			};
+
+			model.splice = function(){
+				var 
+					i,
+					c,
+					t = Array.prototype.splice.apply(this, arguments);
+
+				for( i = 0, c = t.length; i < c; i++ ){
+					if ( t[i].$markRemoval === undefined ){
+						t[i].$markRemoval = dis.removals.length + i;
+					}
+				}
+
+				dis.removals = dis.removals.concat( t );
+
+				return t;
+			};
+		},
+		properties : {
+			remove : function( obj ){
 				var index = this.find( obj );
 				
 				if ( index != -1 ){
-					this.splice( index, 1 );
+					return this.model.splice( index, 1 )[0];
 				}
-			};
-
-			model.find = function( obj, fromIndex ){
+			},
+			find : function( obj, fromIndex ){
 				var 
 					i, 
-					j;
+					j,
+					model = this.model;
 
-				if ( this.indexOf ){
-					return this.indexOf( obj, fromIndex );
+				if ( model.indexOf ){
+					return model.indexOf( obj, fromIndex );
 				}else{
 					if (fromIndex === null) {
 						fromIndex = 0;
 					} else if (fromIndex < 0) {
-						fromIndex = Math.max(0, this.length + fromIndex);
+						fromIndex = Math.max(0, model.length + fromIndex);
 					}
 
-					for ( i = fromIndex, j = this.length; i < j; i++ ) {
-						if (this[i] === obj)
+					for ( i = fromIndex, j = model.length; i < j; i++ ) {
+						if ( model[i] === obj )
 							return i;
 					}
 
 					return -1;
 				}
-			};
-
-			// keeping the removals for the next clean cycle
-			model.pop = function(){
-				dis.removals.push( Array.prototype.pop.call(this) );
-			};
-
-			model.shift = function(){
-				dis.removals.push( Array.prototype.shift.call(this) );
-			};
-
-			model.splice = function(){
-				dis.removals = dis.removals.concat( Array.prototype.splice.apply(this, arguments) );
-			};
-		},
-		properties : {
+			},
 			_clean : function(){
 				var
 					i,
@@ -97,6 +124,10 @@
 								moves[ key ] = val;
 							}else if ( val._.index != i ){
 								moves[ key ] = val;
+								if ( val.$markRemoval !== undefined ){
+									this.removals[ val.$markRemoval ] = undefined;
+									delete val.$markRemoval;
+								}
 							}
 							
 							val._.index = i;
@@ -139,4 +170,4 @@
 			},
 		}
 	});
-}( this ));
+}( jQuery, this ));

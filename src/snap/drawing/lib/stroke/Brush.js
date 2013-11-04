@@ -12,6 +12,7 @@
 		properties : {
 			start : function( x, y ){
 				this.ctx.moveTo( x, y );
+
 				this.ctx.beginPath();
 			},
 			move : function( x, y ){

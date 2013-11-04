@@ -28,29 +28,42 @@ bMoor.constructor.define({
 
 			if ( !this.mountPoint ){
 				// TODO : match by attribute value
-				mount = this._getAttribute('mount');
-				mountBelow = this._getAttribute('mountBelow');
+				mount = this.$.find('[mount]')[0];
 
 				if ( mount ){
-					mount = this.$.find('[mount]')[0];
+					this.mountPoint = {
+						'base' : mount
+					};
+				}else{
+					this.mountPoint = {
+						'base' : ( this.isTable 
+							? this.element.getElementsByTagName( 'tbody' )[0]
+							: this.element
+						)
+					};
 				}
 
-				if ( mountBelow ){
-					element = this.$.find('[mountBelow]')[0];
+				mount = this.$.find('[mountBelow]')[0];
+				if ( mount ){
+					this.mountPoint.top = mount;
+					if ( mount.nextSibling ){
+						this.mountPoint.bottom = mount.nextSibling;
+					}
+				}else{
+					mount = this.$.find('[mountAbove]')[0];
+					if ( mount ){
+						this.mountPoint.bottom = mount;
+						if ( mount.previousSibling ){
+							this.mountPoint.top = mount.previousSibling;
+						}
+					}
 				}
 
-				// TODO : this isn't entirely right, need to clean up
-				this.mountPoint = {
-					base : mount ? mount
-						: ( element ? element.parentNode
-							: ( this.isTable 
-								? this.element.getElementsByTagName( 'tbody' )[0]
-								: this.element
-							)
-						),
-					below : element,
-					above : element
-				};
+				if ( mount ){
+					if ( mount.parentNode != this.mountPoint.base ){
+						this.mountPoint.base = mount.parentNode;
+					}
+				}
 			}
 
 			return this['snap.node.View']._makeTemplate.call( this );
@@ -143,30 +156,12 @@ bMoor.constructor.define({
 
 			return els;
 		},
-		_append : function( element ){
-			var mount = this.mountPoint.above;
-
-			if ( element.nodeType != 3 ){
-				if ( mount ){
-					if ( mount.nextSibling ){
-						mount.parentNode.insertBefore( element, mount.nextSibling );
-					}else{
-						mount.parentNode.appendChild( element );
-					}
-
-					this.mountPoint.last = element;
-				}else{
-					this.mountPoint.base.appendChild( element );
-					this.mountPoint.below = element;
-					this.mountPoint.above = element;
-				}
-			}
-		},
 		// TODO : I would somehow like to use set content...
 		insert : function( model, template, previous ){
 			var 
 				i,
 				c,
+				step,
 				nodes,
 				node,
 				next,
@@ -193,12 +188,11 @@ bMoor.constructor.define({
 				}
 			}
 
-			// TODO : rows -> nodes
 			if ( previous && (prevRow = this.rows[previous._.snapid]) ){
 				previous = prevRow[ prevRow.length - 1 ];
 				thisRow.previous = prevRow;
 			}else{
-				previous = this.mountPoint.above;
+				previous = this.mountPoint.top;
 			}
 
 			for( i = 0, c = thisRow.length; i < c; i++ ){
@@ -212,24 +206,28 @@ bMoor.constructor.define({
 
 			return els;
 		},
+		_append : function( element ){
+			var below;
+
+			if ( element.nodeType != 3 ){
+				if ( !this.mountPoint.bottom ){
+					this.mountPoint.base.appendChild( element );
+				} else if ( !this.mountPoint.top ) {
+					this.mountPoint.base.insertBefore( element, this.mountPoint.base.firstChild );
+				} else {
+					this.mountPount.base.insertBefore( element, this.mountPoint.bottom );
+				}
+			}
+		},
 		// TODO : a lot of the mountpoint is completely pointless
 		_insert : function( element, mount ){
 			if ( element.nodeType != 3 ){
-				if ( mount ){
-					if ( mount.nextSibling ){
-						mount.parentNode.insertBefore( element, mount.nextSibling );
-					}else{
-						mount.parentNode.appendChild( element );
-					}
-
-					if ( mount == this.mountPoint.above ){
-						this.mountPoint.above = element;
-					}
+				if ( !mount ){
+					this.mountPoint.base.insertBefore( element, this.mountPoint.base.firstChild );
+				}else if ( mount.nextSibling ){
+					mount.parentNode.insertBefore( element, mount.nextSibling );
 				}else{
-					// this means there is nothing else...
-					this.mountPoint.base.appendChild( element );
-					this.mountPoint.below = element;
-					this.mountPoint.above = element;
+					mount.parentNode.appendChild( element );
 				}
 			}
 		}

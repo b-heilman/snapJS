@@ -96,13 +96,13 @@ bMoor.constructor.singleton({
 						el;
 					
 					if ( !node ){
-						throw 'Bootstrap tried to find: '+create;
+						throw 'Bootstrap tried to find node: '+create;
 					}
 
 					try{
 						el = new node( element, {}, true );
 					}catch ( ex ){
-						throw 'Bootstrap tried to create: '+create;
+						throw 'Bootstrap tried to create node: '+create;
 					}
 
 					for( i = 0; i < visages.length; i++ ){
@@ -157,13 +157,13 @@ bMoor.constructor.singleton({
 						el;
 
 					if ( !controller ){
-						throw 'Bootstrap tried to find: '+create;
+						throw 'Bootstrap tried to find controller: '+create;
 					}
 
 					try{
 						el = new controller( element, {}, args, true );
 					}catch (ex) {
-						throw 'Bootstrap tried to create: '+create;
+						throw 'Bootstrap tried to create controller: '+create;
 					}
 
 					for( i = 0; i < stints.length; i++ ){

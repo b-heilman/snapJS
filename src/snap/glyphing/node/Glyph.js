@@ -4,6 +4,9 @@ bMoor.constructor.define({
 	name : 'Glyph',
 	namespace : ['snap','glyphing','node'],
 	parent : ['snap','node','View'],
+	require : [
+		['snap','glyphing','controller','Glyph']
+	],
 	properties : {
 		defaultTemplate : 'default',
 		defaultController : ['snap','glyphing','controller','Glyph'],

@@ -72,11 +72,18 @@ bMoor.constructor.define({
 		},
 		
 		calcSize : function(){
+			var dis = this;
+
 			this.size.width = this.$.width();
-			this.element.width = this.size.width * this.ratio;
+
+			if ( this.size.width == 0 ){
+				setTimeout(function(){ dis.calcSize(); }, 10);
+			}else{
+				this.element.width = this.size.width * this.ratio;
 			
-			this.size.height = this.$.height();
-			this.element.height = this.size.height * this.ratio;
+				this.size.height = this.$.height();
+				this.element.height = this.size.height * this.ratio;
+			}
 		},
 
 		getContext : function(){

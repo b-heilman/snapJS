@@ -229,7 +229,7 @@ bMoor.constructor.define({
 		}
 	});
 }( this ));
-;;(function( global, undefined ){
+;;(function( $, global, undefined ){
 	// TODO : allow traits, so I can pull in functionality from Model.js
 	bMoor.constructor.mutate({
 		name : 'Collection',
@@ -243,52 +243,79 @@ bMoor.constructor.define({
 
 			this.removals = [];
 
-			// TODO : is this the best way to do this?
-			model.remove = function( obj ){
+			// Need to inject so we can observe removals
+			model.pop = function(){
+				var t = Array.prototype.pop.call( this );
+
+				if ( t.$markRemoval === undefined ){
+					t.$markRemoval = dis.removals.length;
+				}
+
+				dis.removals.push( t );
+
+				return t;
+			};
+
+			model.shift = function(){
+				var t = Array.prototype.shift.call( this );
+
+				if ( t.$markRemoval === undefined ){
+					t.$markRemoval = dis.removals.length;
+				}
+
+				dis.removals.push( t );
+
+				return t;
+			};
+
+			model.splice = function(){
+				var 
+					i,
+					c,
+					t = Array.prototype.splice.apply(this, arguments);
+
+				for( i = 0, c = t.length; i < c; i++ ){
+					if ( t[i].$markRemoval === undefined ){
+						t[i].$markRemoval = dis.removals.length + i;
+					}
+				}
+
+				dis.removals = dis.removals.concat( t );
+
+				return t;
+			};
+		},
+		properties : {
+			remove : function( obj ){
 				var index = this.find( obj );
 				
 				if ( index != -1 ){
-					this.splice( index, 1 );
+					return this.model.splice( index, 1 )[0];
 				}
-			};
-
-			model.find = function( obj, fromIndex ){
+			},
+			find : function( obj, fromIndex ){
 				var 
 					i, 
-					j;
+					j,
+					model = this.model;
 
-				if ( this.indexOf ){
-					return this.indexOf( obj, fromIndex );
+				if ( model.indexOf ){
+					return model.indexOf( obj, fromIndex );
 				}else{
 					if (fromIndex === null) {
 						fromIndex = 0;
 					} else if (fromIndex < 0) {
-						fromIndex = Math.max(0, this.length + fromIndex);
+						fromIndex = Math.max(0, model.length + fromIndex);
 					}
 
-					for ( i = fromIndex, j = this.length; i < j; i++ ) {
-						if (this[i] === obj)
+					for ( i = fromIndex, j = model.length; i < j; i++ ) {
+						if ( model[i] === obj )
 							return i;
 					}
 
 					return -1;
 				}
-			};
-
-			// keeping the removals for the next clean cycle
-			model.pop = function(){
-				dis.removals.push( Array.prototype.pop.call(this) );
-			};
-
-			model.shift = function(){
-				dis.removals.push( Array.prototype.shift.call(this) );
-			};
-
-			model.splice = function(){
-				dis.removals = dis.removals.concat( Array.prototype.splice.apply(this, arguments) );
-			};
-		},
-		properties : {
+			},
 			_clean : function(){
 				var
 					i,
@@ -328,6 +355,10 @@ bMoor.constructor.define({
 								moves[ key ] = val;
 							}else if ( val._.index != i ){
 								moves[ key ] = val;
+								if ( val.$markRemoval !== undefined ){
+									this.removals[ val.$markRemoval ] = undefined;
+									delete val.$markRemoval;
+								}
 							}
 							
 							val._.index = i;
@@ -370,7 +401,7 @@ bMoor.constructor.define({
 			},
 		}
 	});
-}( this ));
+}( jQuery, this ));
 ;;(function( $, global, undefined ){
 
 bMoor.constructor.define({
@@ -661,13 +692,13 @@ bMoor.constructor.singleton({
 						el;
 					
 					if ( !node ){
-						throw 'Bootstrap tried to find: '+create;
+						throw 'Bootstrap tried to find node: '+create;
 					}
 
 					try{
 						el = new node( element, {}, true );
 					}catch ( ex ){
-						throw 'Bootstrap tried to create: '+create;
+						throw 'Bootstrap tried to create node: '+create;
 					}
 
 					for( i = 0; i < visages.length; i++ ){
@@ -722,13 +753,13 @@ bMoor.constructor.singleton({
 						el;
 
 					if ( !controller ){
-						throw 'Bootstrap tried to find: '+create;
+						throw 'Bootstrap tried to find controller: '+create;
 					}
 
 					try{
 						el = new controller( element, {}, args, true );
 					}catch (ex) {
-						throw 'Bootstrap tried to create: '+create;
+						throw 'Bootstrap tried to create controller: '+create;
 					}
 
 					for( i = 0; i < stints.length; i++ ){
@@ -897,7 +928,6 @@ bMoor.constructor.singleton({
 				}
 
 				for( key in this._data ){
-					console.log( key, this._data[key] );
 					func( key, this._data[key] );
 				}
 
@@ -1825,29 +1855,42 @@ bMoor.constructor.define({
 
 			if ( !this.mountPoint ){
 				// TODO : match by attribute value
-				mount = this._getAttribute('mount');
-				mountBelow = this._getAttribute('mountBelow');
+				mount = this.$.find('[mount]')[0];
 
 				if ( mount ){
-					mount = this.$.find('[mount]')[0];
+					this.mountPoint = {
+						'base' : mount
+					};
+				}else{
+					this.mountPoint = {
+						'base' : ( this.isTable 
+							? this.element.getElementsByTagName( 'tbody' )[0]
+							: this.element
+						)
+					};
 				}
 
-				if ( mountBelow ){
-					element = this.$.find('[mountBelow]')[0];
+				mount = this.$.find('[mountBelow]')[0];
+				if ( mount ){
+					this.mountPoint.top = mount;
+					if ( mount.nextSibling ){
+						this.mountPoint.bottom = mount.nextSibling;
+					}
+				}else{
+					mount = this.$.find('[mountAbove]')[0];
+					if ( mount ){
+						this.mountPoint.bottom = mount;
+						if ( mount.previousSibling ){
+							this.mountPoint.top = mount.previousSibling;
+						}
+					}
 				}
 
-				// TODO : this isn't entirely right, need to clean up
-				this.mountPoint = {
-					base : mount ? mount
-						: ( element ? element.parentNode
-							: ( this.isTable 
-								? this.element.getElementsByTagName( 'tbody' )[0]
-								: this.element
-							)
-						),
-					below : element,
-					above : element
-				};
+				if ( mount ){
+					if ( mount.parentNode != this.mountPoint.base ){
+						this.mountPoint.base = mount.parentNode;
+					}
+				}
 			}
 
 			return this['snap.node.View']._makeTemplate.call( this );
@@ -1940,30 +1983,12 @@ bMoor.constructor.define({
 
 			return els;
 		},
-		_append : function( element ){
-			var mount = this.mountPoint.above;
-
-			if ( element.nodeType != 3 ){
-				if ( mount ){
-					if ( mount.nextSibling ){
-						mount.parentNode.insertBefore( element, mount.nextSibling );
-					}else{
-						mount.parentNode.appendChild( element );
-					}
-
-					this.mountPoint.last = element;
-				}else{
-					this.mountPoint.base.appendChild( element );
-					this.mountPoint.below = element;
-					this.mountPoint.above = element;
-				}
-			}
-		},
 		// TODO : I would somehow like to use set content...
 		insert : function( model, template, previous ){
 			var 
 				i,
 				c,
+				step,
 				nodes,
 				node,
 				next,
@@ -1990,12 +2015,11 @@ bMoor.constructor.define({
 				}
 			}
 
-			// TODO : rows -> nodes
 			if ( previous && (prevRow = this.rows[previous._.snapid]) ){
 				previous = prevRow[ prevRow.length - 1 ];
 				thisRow.previous = prevRow;
 			}else{
-				previous = this.mountPoint.above;
+				previous = this.mountPoint.top;
 			}
 
 			for( i = 0, c = thisRow.length; i < c; i++ ){
@@ -2009,24 +2033,28 @@ bMoor.constructor.define({
 
 			return els;
 		},
+		_append : function( element ){
+			var below;
+
+			if ( element.nodeType != 3 ){
+				if ( !this.mountPoint.bottom ){
+					this.mountPoint.base.appendChild( element );
+				} else if ( !this.mountPoint.top ) {
+					this.mountPoint.base.insertBefore( element, this.mountPoint.base.firstChild );
+				} else {
+					this.mountPount.base.insertBefore( element, this.mountPoint.bottom );
+				}
+			}
+		},
 		// TODO : a lot of the mountpoint is completely pointless
 		_insert : function( element, mount ){
 			if ( element.nodeType != 3 ){
-				if ( mount ){
-					if ( mount.nextSibling ){
-						mount.parentNode.insertBefore( element, mount.nextSibling );
-					}else{
-						mount.parentNode.appendChild( element );
-					}
-
-					if ( mount == this.mountPoint.above ){
-						this.mountPoint.above = element;
-					}
+				if ( !mount ){
+					this.mountPoint.base.insertBefore( element, this.mountPoint.base.firstChild );
+				}else if ( mount.nextSibling ){
+					mount.parentNode.insertBefore( element, mount.nextSibling );
 				}else{
-					// this means there is nothing else...
-					this.mountPoint.base.appendChild( element );
-					this.mountPoint.below = element;
-					this.mountPoint.above = element;
+					mount.parentNode.appendChild( element );
 				}
 			}
 		}
