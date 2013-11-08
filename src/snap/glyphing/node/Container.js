@@ -62,8 +62,6 @@ bMoor.constructor.define({
 					bottom : offset.top + this.$.height(),
 					left   : offset.left
 				};
-
-				console.log( model.box );
 			}else{
 				model.box = null;
 			}

@@ -76,7 +76,7 @@ bMoor.constructor.define({
 
 			this.size.width = this.$.width();
 
-			if ( this.size.width == 0 ){
+			if ( !this.size.width ){
 				setTimeout(function(){ dis.calcSize(); }, 10);
 			}else{
 				this.element.width = this.size.width * this.ratio;

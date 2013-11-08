@@ -44,7 +44,7 @@ bMoor.constructor.decorator({
 				}else{
 					el = field;
 				}
-
+				
 				if ( !el.node ){
 					if ( el.nodeName == 'BUTTON' ){
 						input = new snap.node.input.Button( field );

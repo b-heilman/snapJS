@@ -1,5 +1,12 @@
 ;(function( $, global, undefined ){
 
+/**
+The abstract construct that all of the snap framework is build off of
+
+@class Core 
+@namespace snap
+@constructor
+**/
 bMoor.constructor.define({
 	name : 'Core',
 	namespace : ['snap'],
@@ -10,30 +17,69 @@ bMoor.constructor.define({
 		]
 	},
 	properties : {
+		/**
+		Returns the base model for the instance
+
+		@method getModel
+		@return {Object} The base model
+		**/
 		getModel : function(){
 			if ( this.observer ){
 				return this.observer.model;
 			}else return null;
 		},
+		/**
+		Issue a warning to the log
+
+		@method __warn
+		**/
 		__warn : function( warning ){
 			this__log( 'warn', warning );
 		},
+		/**
+		Issue an error to the log, and then throw an error
+
+		@method __error
+		**/
 		__error : function( error ){
 			this.__log( 'error', error );
 			throw error;
 		},
+		/**
+		Write out to the log
+
+		@method __log
+		**/
 		__log : function(){
 			Array.prototype.unshift.call( arguments, this.__class + ' -> ' );
 			console.log.apply( console, arguments );
 		},
+		/**
+		Set the element the instance will be wrapped around
+
+		@method _initElement
+		**/
 		_initElement : function( element ){
 			this.element = element;
 		},
+		/**
+		Find the closest model and pass it back
+
+		@method _initModel
+		@return {Object} The base model
+		**/
 		_initModel : function(){
 			var observer = this._findObserver();
 
 			return  observer ? observer.model : global;
 		},
+		/**
+		Find the closest model and pass it back
+
+		@method _observe
+		@param {Object} model The base model the instance should observe
+		@return {snap.observer} The instance's observer
+		**/
 		_observe : function( model ){
 			var observer = null;
 
@@ -51,9 +97,24 @@ bMoor.constructor.define({
 
 			return observer;
 		},
+		/**
+		Accepts the attributes for the instance, add it to the internal hash
+
+		@method _parseAttributes
+		@param {Object} attributes The attributes for the instance
+		**/
 		_parseAttributes : function( attributes ){
 			this._attributes = attributes;
 		},
+		/**
+		Search through a variable's properties and return the value
+
+		@method _unwrapVar
+		@param {Object} context The base object to search through
+		@param {String|Array} variable The variable path to follow
+		@param {Boolean} smart Return back more information about the match, or just the value
+		@return The matched value
+		**/
 		_unwrapVar : function( context, variable, smart ){
 			var 
 				scope,

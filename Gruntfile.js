@@ -68,6 +68,17 @@ module.exports = function(grunt) {
 			options : {
 				specs : 'spec/**/*.js'
 			}
+		},
+		yuidoc: {
+    		compile: {
+      			name: '<%= pkg.name %>',
+      			description: '<%= pkg.description %>',
+      			version: '<%= pkg.version %>',
+      			options: {
+        			paths: 'src/snap',
+        			outdir: 'docs/'
+				}
+			}
 		}
   	});
 
@@ -76,7 +87,9 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-jasmine');
+	grunt.loadNpmTasks('grunt-contrib-yuidoc');
 
 	// Default task(s).
 	grunt.registerTask('default', ['jshint:all','concat','uglify']);
+	grunt.registerTask('docgen', ['jshint:all','yuidoc']);
 };

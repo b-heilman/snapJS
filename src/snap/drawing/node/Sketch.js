@@ -73,7 +73,6 @@ bMoor.constructor.define({
 			element.setAttribute('unselectable', 'on');
 			element.onselectstart = function() { if (dragging) return false; };
 
-			console.log( 'sketch' );
 			return $el;
 		},
 		save : function(){

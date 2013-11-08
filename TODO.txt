@@ -20,3 +20,4 @@
 Bugs
 - mutated classes can not be extended
 - finalizeContent seems to be getting called early
+- finalizeContent doesn't get called if there is no template...
