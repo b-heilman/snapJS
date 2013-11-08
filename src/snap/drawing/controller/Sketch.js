@@ -1,5 +1,12 @@
 ;(function( $, global, undefined ){
 
+/**
+Handles the functionality and model construct for Sketch
+
+@class Sketch 
+@namespace snap.drawing.controller
+@constructor
+**/
 bMoor.constructor.define({
 	name : 'Sketch',
 	namespace : ['snap','drawing','controller'],
@@ -18,7 +25,22 @@ bMoor.constructor.define({
 		}
 	},
 	properties : {
+		/**
+		Maintains a pointer to the mouse tracking variable
+
+		@property lastPosition
+		@default bmoor.lib.mouseTracker
+		**/
 		lastPosition : bmoor.lib.mouseTracker,
+		/**
+		Function to fire on the mousedown event of a sketch
+
+		@method mousedown
+		@param {Event} event The event generated
+		@param {Element} element The element triggering the event
+		@param {snap.observer} observer The closest observer to the triggering element
+		@param {snap.node} node The closest node to the triggering element
+		**/
 		mousedown : function ( event, element, observer, node ){
 			var 
 				lastPosition = this.lastPosition,
@@ -47,6 +69,13 @@ bMoor.constructor.define({
 			
 			return false;
 		},
+		/**
+		Generates the default model
+
+		@method _model
+		@param parentModel The model coming down from higher in the heirarchy 
+		@return {Object} The model to pass to the observer
+		**/ 
 		_model : function( parentModel ){
 			return {};
 		}

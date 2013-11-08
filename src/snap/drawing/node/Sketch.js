@@ -1,5 +1,12 @@
 ;(function( $, global, undefined ){
 
+/**
+The node that allows for the user to draw
+
+@class Sketch 
+@namespace snap.drawing.node
+@constructor
+**/
 bMoor.constructor.define({
 	name : 'Sketch',
 	namespace : ['snap','drawing','node'],
@@ -10,44 +17,21 @@ bMoor.constructor.define({
 		['snap','drawing','lib','stroke','Brush'],
 		['snap','drawing','controller','Sketch']
 	],
-	node : {
-		className : 'drawing-sketch',
-		helpers : {
-			lastPosition : bmoor.lib.mouseTracker
-		},
-		actions : {
-			'mousedown' : function ( event, node, helpers ) {
-				var 
-					lastPosition = helpers.lastPosition,
-					offset = node.$.offset(),
-					model = node.observer.model,
-					stroke = new (bMoor.get( model.stroke ))( node.ctx, model ),
-					onMove = function( event ){
-						stroke.move( event.pageX - offset.left, event.pageY - offset.top );
-					},
-					onUp = function(){
-						onOut();
-					},
-					onOut = function(){
-						stroke.end( lastPosition.x - offset.left, lastPosition.y - offset.top );
-						
-						$(document.body).unbind( 'mousemove', onMove );
-						$(document.body).unbind( 'mouseup', onUp );
-						$(document.body).unbind( 'mouseout', onOut );
-					};
-
-				stroke.start( lastPosition.x - offset.left, lastPosition.y - offset.top );
-				
-				$(document.body).bind( 'mousemove', onMove );
-				$(document.body).bind( 'mouseup', onUp );
-				$(document.body).bind( 'mouseout', onOut );
-				
-				return false;
-			}
-		}
-	},
 	properties : {
+		/**
+		Sets the default controller for the node
+
+		@property defaultController
+		@default snap.drawing.controller.Sketch
+		**/
 		defaultController : ['snap','drawing','controller','Sketch'],
+		/**
+		Initializes the element for the instance
+
+		@method _initElement
+		@param {DOMElement} element The element to be wrapping
+		@return {jQuery}
+		**/
 		_initElement : function( element ){
 			var $el;
 
@@ -75,9 +59,22 @@ bMoor.constructor.define({
 
 			return $el;
 		},
+		/**
+		Return back the base64 encoding of the sketch
+
+		@method save
+		@return {String} The encoding of the image
+		**/
 		save : function(){
 			return this.ctx.toDataURL();
 		},
+		/**
+		Populate the canvas with the image supplied.
+
+		@method load
+		@param {String} dataURL URL of the image to load
+		@param {Function} cb Callback function to fire after the image is loaded
+		**/
 		load : function( dataURL, cb ){
 			var 
 				ctx = this.ctx,
@@ -94,21 +91,13 @@ bMoor.constructor.define({
 			
 			img.src = dataURL;
 		},
+		/**
+		Force a resizing calculation of the sketch
+
+		@method resize
+		**/
 		resize : function(){
 			this.ctx.calcSize();
-		},
-		locked : true,
-		lock : function(){
-			this.$.removeClass( 'unlocked' );
-			this.locked = true;
-			
-			return this;
-		},
-		unlock : function(){
-			this.$.addClass( 'unlocked' );
-			this.locked = false;
-			
-			return this;
 		}
 	}
 });

@@ -1,5 +1,12 @@
 ;(function( $, global, undefined ){
 
+/**
+Wraps the default functionality of a canvas's context.  Allow for scaling of resolution density.
+
+@class Context 
+@namespace snap.drawing.lib
+@constructor
+**/
 bMoor.constructor.define({
 	name      : 'Context',
 	namespace : ['snap','drawing','lib'],
@@ -75,13 +82,13 @@ bMoor.constructor.define({
 			var dis = this;
 
 			this.size.width = this.$.width();
+			this.size.height = this.$.height();
 
-			if ( !this.size.width ){
+			// TODO : this appears to be a bug, I need to look more into it, this shouldn't be needed, right?
+			if ( this.size.width == 0 || this.size.height == 0 ){
 				setTimeout(function(){ dis.calcSize(); }, 10);
 			}else{
 				this.element.width = this.size.width * this.ratio;
-			
-				this.size.height = this.$.height();
 				this.element.height = this.size.height * this.ratio;
 			}
 		},
